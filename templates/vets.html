@@ -28,7 +28,6 @@
     padding: 0 5% 60px;
   }
 
-  /* Filter Bar */
   .filter-bar {
     display: flex;
     justify-content: center;
@@ -54,14 +53,12 @@
     color: white;
   }
 
-  /* Vets Grid */
   .vets-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 30px;
   }
 
-  /* Vet Card */
   .vet-card {
     background: white;
     border-radius: 20px;
@@ -75,7 +72,6 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.12);
   }
 
-  /* Vet Image - Full display fix */
   .vet-image-wrapper {
     width: 100%;
     height: 250px;
@@ -92,7 +88,6 @@
     display: block;
   }
 
-  /* Fallback if image fails to load */
   .vet-image-error {
     width: 100%;
     height: 100%;
@@ -122,7 +117,7 @@
   }
 
   .vet-name {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: #1a1d26;
     margin-bottom: 5px;
@@ -219,11 +214,6 @@
     transform: translateY(-2px);
   }
 
-  .btn-email i, .btn-call i {
-    margin-right: 5px;
-  }
-
-  /* Emergency Banner */
   .emergency-banner {
     background: linear-gradient(135deg, #fff5f0, #ffe8e0);
     border-radius: 20px;
@@ -256,19 +246,12 @@
     border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s;
-  }
-
-  .emergency-btn:hover {
-    background: #c0392b;
-    transform: translateY(-2px);
   }
 
   @media (max-width: 768px) {
     .emergency-banner { flex-direction: column; text-align: center; }
     .emergency-btn { margin-left: 0; margin-top: 10px; }
     .vet-image-wrapper { height: 200px; }
-    .vets-grid { grid-template-columns: 1fr; }
   }
 </style>
 {% endblock %}
@@ -280,7 +263,6 @@
 </div>
 
 <div class="vets-container">
-  <!-- Filter Bar -->
   <div class="filter-bar">
     <button class="filter-btn active" data-filter="all">All Vets</button>
     <button class="filter-btn" data-filter="division-a">Division A</button>
@@ -288,36 +270,45 @@
     <button class="filter-btn" data-filter="emergency">24/7 Emergency</button>
   </div>
 
-  <!-- Vets Grid -->
   <div class="vets-grid" id="vetsGrid">
     {% if vets and vets|length > 0 %}
       {% for vet in vets %}
-      <div class="vet-card" data-location="{{ vet.location }}" data-emergency="{{ vet.emergency }}">
+      <div class="vet-card" data-location="{{ vet.location }}" data-emergency="{{ vet.available }}">
         <!-- Vet Image -->
         <div class="vet-image-wrapper">
-          {% if vet.image_url and vet.image_url != '' %}
-            <img class="vet-image" src="{{ vet.image_url }}" alt="{{ vet.name }}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=vet-image-error><i class=\'fas fa-user-md\'></i></div>'">
+          {% if vet.name == 'Dr. Ssali James' %}
+            <img class="vet-image" src="{{ url_for('static', filename='images/DOCTOR_SSALI.jpg') }}" alt="{{ vet.name }}">
+          {% elif vet.name == 'Dr. Nakato Sarah' %}
+            <img class="vet-image" src="{{ url_for('static', filename='images/DOCTOR_SARAH.jpg') }}" alt="{{ vet.name }}">
+          {% elif vet.name == 'Dr. Mukasa David' %}
+            <img class="vet-image" src="{{ url_for('static', filename='images/DOCTOR_MUKASA.jpg') }}" alt="{{ vet.name }}">
+          {% elif vet.name == 'Dr. Aisha Nambi' %}
+            <img class="vet-image" src="{{ url_for('static', filename='images/DOCTOR_AISHA.jpg') }}" alt="{{ vet.name }}">
+          {% elif vet.name == 'Dr. John Kayongo' %}
+            <img class="vet-image" src="{{ url_for('static', filename='images/DOCTOR_KAYONGO.jpg') }}" alt="{{ vet.name }}">
+          {% elif vet.name == 'Dr. Grace Atim' %}
+            <img class="vet-image" src="{{ url_for('static', filename='images/DOCTOR_GRACE.jpg') }}" alt="{{ vet.name }}">
           {% else %}
             <div class="vet-image-error">
               <i class="fas fa-user-md"></i>
             </div>
           {% endif %}
-          {% if vet.emergency %}
-          <span class="vet-badge">🚨 24/7 Emergency</span>
+          {% if vet.available %}
+          <span class="vet-badge">✅ Available</span>
           {% endif %}
         </div>
         
         <div class="vet-info">
           <h3 class="vet-name">{{ vet.name }}</h3>
           <div class="vet-clinic">
-            <i class="fas fa-hospital-user"></i> {{ vet.clinic }}
+            <i class="fas fa-hospital-user"></i> {{ vet.clinic_name }}
           </div>
           <div class="vet-details">
             <div class="vet-detail">
               <i class="fas fa-map-marker-alt"></i> 📍 {{ vet.location }}
             </div>
             <div class="vet-detail">
-              <i class="fas fa-stethoscope"></i> 🔬 {{ vet.specialty }}
+              <i class="fas fa-stethoscope"></i> 🔬 {{ vet.specialization }}
             </div>
           </div>
           <span class="vet-specialty"><i class="fas fa-check-circle"></i> Verified Professional</span>
@@ -341,7 +332,6 @@
     {% endif %}
   </div>
 
-  <!-- Emergency Banner -->
   <div class="emergency-banner">
     <div class="emergency-icon">🚨</div>
     <div class="emergency-content">
@@ -366,7 +356,6 @@
       
       vetCards.forEach(card => {
         const location = card.getAttribute('data-location') || '';
-        const hasEmergency = card.getAttribute('data-emergency') === 'True' || card.querySelector('.vet-badge') !== null;
         
         if (filter === 'all') {
           card.style.display = 'block';
@@ -375,7 +364,7 @@
         } else if (filter === 'division-b') {
           card.style.display = location.includes('Division B') ? 'block' : 'none';
         } else if (filter === 'emergency') {
-          card.style.display = hasEmergency ? 'block' : 'none';
+          card.style.display = 'block';
         }
       });
     });
