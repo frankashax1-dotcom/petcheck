@@ -1,180 +1,646 @@
 {% extends "base.html" %}
-{% block title %}{{ article.title if article else 'Article' }} — PetCheck{% endblock %}
+{% block title %}Article — PetCheck{% endblock %}
+
+{% block extra_css %}
+<style>
+  .article-detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 5%;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #e0702a;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .back-button:hover { gap: 12px; }
+
+  .article-category {
+    display: inline-block;
+    background: #e0702a;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .article-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a1d26;
+    margin-bottom: 15px;
+    line-height: 1.3;
+  }
+
+  .article-meta {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 25px;
+    color: #666;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .article-meta i { color: #e0702a; margin-right: 5px; }
+
+  .article-feature-image {
+    width: 100%;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    margin-bottom: 30px;
+  }
+
+  .article-body {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #333;
+  }
+
+  .article-body p { margin-bottom: 1.2rem; }
+  .article-body h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: #1a1d26; }
+  .article-body h3 { font-size: 1.2rem; margin: 1.2rem 0 0.8rem; color: #1a1d26; }
+  .article-body ul, .article-body ol { margin: 1rem 0; padding-left: 2rem; }
+  .article-body li { margin-bottom: 0.5rem; }
+  .article-body blockquote {
+    background: #f5f0e8;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid #e0702a;
+    margin: 1rem 0;
+    font-style: italic;
+  }
+
+  .share-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+  }
+
+  .share-btn {
+    padding: 8px 18px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .share-btn:hover { transform: translateY(-2px); }
+  .share-facebook { background: #1877f2; color: white; }
+  .share-twitter { background: #1da1f2; color: white; }
+  .share-whatsapp { background: #25d366; color: white; }
+  .share-copy { background: #666; color: white; cursor: pointer; border: none; }
+
+  .related-section {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+  }
+
+  .related-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .related-card:hover { transform: translateY(-5px); }
+  .related-image { height: 140px; background-size: cover; background-position: center; }
+  .related-content { padding: 15px; }
+  .related-content h4 { font-size: 0.95rem; font-weight: 700; color: #1a1d26; margin-bottom: 8px; }
+  .related-category { font-size: 0.7rem; color: #e0702a; font-weight: 600; }
+
+  .cta-banner {
+    background: linear-gradient(135deg, #216b5e, #1a5248);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    color: white;
+    margin-top: 50px;
+  }
+
+  .cta-btn {
+    background: white;
+    color: #216b5e;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .article-title { font-size: 1.5rem; }
+    .article-feature-image { height: 200px; }
+    .related-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="article-detail-page">
+<div class="article-detail-container">
+  <a href="/articles" class="back-button"><i class="fas fa-arrow-left"></i> Back to Articles</a>
 
-  <div class="article-back">
-    <a href="/articles">← Back to Articles</a>
-  </div>
+  <div id="articleContent"></div>
 
-  {% if article %}
-  <div class="article-detail-inner">
-    <div class="article-detail-badge">{{ article.category or 'General' }}</div>
-    <h1>{{ article.title }}</h1>
-    <div class="article-detail-meta">
-      <span>📅 {{ article.date }}</span>
-      <span>⏱ {{ article.read_time }} min read</span>
-    </div>
-    <div class="article-body">
-      {{ article.content | safe }}
+  <div class="share-section">
+    <div style="font-weight: 600;">📤 Share this article</div>
+    <div class="share-buttons">
+      <a href="#" class="share-btn share-facebook" id="shareFacebook"><i class="fab fa-facebook-f"></i> Facebook</a>
+      <a href="#" class="share-btn share-twitter" id="shareTwitter"><i class="fab fa-twitter"></i> Twitter</a>
+      <a href="#" class="share-btn share-whatsapp" id="shareWhatsApp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <button class="share-btn share-copy" id="copyLink"><i class="fas fa-link"></i> Copy Link</button>
     </div>
   </div>
-  {% else %}
-  <!-- Static article content for demo -->
-  <div class="article-detail-inner">
-    <div class="article-detail-badge" id="articleBadge"></div>
-    <h1 id="articleTitle"></h1>
-    <div class="article-detail-meta">
-      <span id="articleDate"></span>
-      <span id="articleRead"></span>
-    </div>
-    <div class="article-body" id="articleBody"></div>
+
+  <div class="related-section">
+    <h3 style="font-size: 1.3rem;">📖 You might also like</h3>
+    <div class="related-grid" id="relatedArticles"></div>
   </div>
 
-  <script>
-  const articles = {
+  <div class="cta-banner">
+    <h3>🐾 Think your pet might be affected?</h3>
+    <p>Upload a photo for an instant AI diagnosis</p>
+    <a href="/upload" class="cta-btn"><i class="fas fa-camera"></i> Diagnose My Pet →</a>
+  </div>
+</div>
+
+<script>
+  // FULL CONTENT FOR ALL 12 ARTICLES
+  const articlesData = {
     1: {
-      badge: "Dogs", title: "How to Spot Mange in Dogs Early",
-      date: "📅 01 Jan 2025", read: "⏱ 4 min read",
-      body: `
-        <p>Mange is one of the most common skin diseases affecting dogs in Uganda, particularly in areas like Entebbe where pets may come into contact with stray animals. It is caused by microscopic mites that burrow into the skin.</p>
-        <h3>Types of Mange</h3>
-        <p><strong>Sarcoptic mange (scabies)</strong> is highly contagious and can spread to humans. <strong>Demodectic mange</strong> is less contagious and usually affects puppies or dogs with weak immune systems.</p>
+      title: "How to Spot Mange in Dogs Early",
+      category: "Dogs",
+      date: "January 15, 2024",
+      readTime: "4",
+      image: "",
+      content: `
+        <p>Mange is one of the most common skin diseases affecting dogs in Uganda, particularly in areas where pets may come into contact with stray animals. It is caused by microscopic mites that burrow into the skin, causing intense itching and hair loss.</p>
+        
+        <h2>Types of Mange</h2>
+        <p><strong>Sarcoptic mange (scabies)</strong> is highly contagious and can spread to humans. It causes intense itching and hair loss. <strong>Demodectic mange</strong> is less contagious and usually affects puppies or dogs with weak immune systems.</p>
+        
         <h3>Early Warning Signs</h3>
         <ul>
-          <li>Intense itching and scratching</li>
+          <li>Intense itching and scratching, especially around ears and elbows</li>
           <li>Hair loss, especially around the eyes, ears, and elbows</li>
           <li>Red, crusty, or scaly skin patches</li>
-          <li>Sores and blisters from scratching</li>
+          <li>Sores and blisters from excessive scratching</li>
+          <li>Restlessness and discomfort</li>
         </ul>
+        
         <h3>Home Care Tips</h3>
         <p>Keep your dog clean and dry. Wash all bedding in hot water. Avoid contact with other dogs until treated. Visit a vet for proper antiparasitic medication — mange can worsen quickly without treatment.</p>
+        
+        <blockquote>"Early detection is key. If you notice your dog scratching excessively, consult a veterinarian immediately."</blockquote>
+        
         <h3>Prevention</h3>
         <p>Regular grooming, a healthy diet, and avoiding contact with stray animals are the best ways to prevent mange. Annual vet checkups also help catch skin issues early.</p>
       `
     },
     2: {
-      badge: "Cats", title: "Eye Infections in Cats: Causes & Treatment",
-      date: "📅 05 Jan 2025", read: "⏱ 3 min read",
-      body: `
+      title: "Eye Infections in Cats: Causes & Treatment",
+      category: "Cats",
+      date: "January 10, 2024",
+      readTime: "3",
+      image: "",
+      content: `
         <p>Eye infections, especially conjunctivitis, are among the most frequently seen conditions in cats. The good news is that most cases can be managed effectively with proper care.</p>
-        <h3>Common Causes</h3>
+        
+        <h2>Common Causes</h2>
         <ul>
           <li>Bacterial infections (most common)</li>
           <li>Viral infections such as feline herpesvirus</li>
           <li>Dust, smoke, or chemical irritants</li>
           <li>Foreign objects in the eye</li>
+          <li>Allergies</li>
         </ul>
+        
         <h3>Symptoms to Watch For</h3>
         <p>Watery or yellow-green discharge from the eye, redness, swelling of the eyelids, squinting or keeping the eye closed, and pawing at the face.</p>
+        
         <h3>Safe Home Care</h3>
         <p>Gently wipe discharge with a clean, damp cloth. Use a separate cloth for each eye to avoid spreading infection. Do not apply human eye drops — they can be harmful to cats. See a vet for antibiotic drops or antiviral medication.</p>
+        
+        <h3>When to See a Vet</h3>
+        <p>If symptoms persist for more than 24 hours, or if your cat seems in pain, visit a veterinarian immediately.</p>
       `
     },
     3: {
-      badge: "Nutrition", title: "Feeding Your Dog the Right Diet in Uganda",
-      date: "📅 10 Jan 2025", read: "⏱ 5 min read",
-      body: `
+      title: "Feeding Your Dog the Right Diet in Uganda",
+      category: "Nutrition",
+      date: "January 5, 2024",
+      readTime: "5",
+      image: "",
+      content: `
         <p>In Uganda, many pet owners feed their dogs leftover table food. While this is economical, not all human foods are safe for dogs. Understanding what your dog needs can prevent many common health problems.</p>
-        <h3>Safe Local Foods for Dogs</h3>
+        
+        <h2>Safe Local Foods for Dogs</h2>
         <ul>
-          <li>Plain cooked rice and maize — good source of carbohydrates</li>
+          <li>Plain cooked rice and posho — good source of carbohydrates</li>
           <li>Boiled chicken or beef (no bones, no salt)</li>
           <li>Cooked sweet potatoes and carrots</li>
           <li>Eggs — great source of protein</li>
+          <li>Pumpkin — good for digestion</li>
         </ul>
-        <h3>Foods to Avoid</h3>
+        
+        <h2>Foods to Avoid</h2>
         <ul>
           <li>Onions and garlic — toxic to dogs</li>
           <li>Avocado — contains persin which is harmful</li>
           <li>Bones — can splinter and cause internal injuries</li>
           <li>Sugary foods and drinks</li>
           <li>Raw cassava — contains cyanide compounds</li>
+          <li>Chocolate and caffeine — extremely dangerous</li>
         </ul>
+        
         <h3>Recommended Feeding Schedule</h3>
         <p>Puppies (under 6 months): 3–4 small meals per day. Adult dogs: 2 meals per day. Always provide fresh, clean water. Consult your vet for portion sizes based on your dog's breed and weight.</p>
       `
     },
     4: {
-      badge: "Prevention", title: "Vaccination Schedule for Dogs & Cats",
-      date: "📅 15 Jan 2025", read: "⏱ 4 min read",
-      body: `
+      title: "Vaccination Schedule for Dogs & Cats",
+      category: "Prevention",
+      date: "December 28, 2023",
+      readTime: "4",
+      image: "",
+      content: `
         <p>Vaccinations are the single most important preventive measure you can take for your pet's health. They protect against deadly diseases that are common in Uganda.</p>
-        <h3>Core Vaccines for Dogs</h3>
+        
+        <h2>Core Vaccines for Dogs</h2>
         <ul>
           <li><strong>Rabies</strong> — required by law in Uganda. First dose at 3 months, then annually.</li>
           <li><strong>Distemper (DHPPi)</strong> — protects against 4 diseases. Start at 6–8 weeks, booster every year.</li>
           <li><strong>Parvovirus</strong> — highly fatal in puppies. Included in DHPPi vaccine.</li>
         </ul>
-        <h3>Core Vaccines for Cats</h3>
+        
+        <h2>Core Vaccines for Cats</h2>
         <ul>
           <li><strong>Rabies</strong> — first dose at 3 months, then annually.</li>
           <li><strong>FVRCP</strong> — protects against feline viral rhinotracheitis, calicivirus, and panleukopenia. Start at 6–8 weeks.</li>
         </ul>
+        
         <h3>Where to Vaccinate in Entebbe</h3>
         <p>Visit any of the verified vet clinics listed on PetCheck's Vet Finder. Most vaccines in Uganda cost between UGX 20,000–50,000 per dose.</p>
+        
+        <h3>Why Vaccinations Matter</h3>
+        <p>Vaccinated pets are protected from deadly diseases that can spread quickly. Many of these diseases have no cure, so prevention is the only option.</p>
       `
     },
     5: {
-      badge: "Dogs", title: "Understanding Ear Infections in Dogs",
-      date: "📅 20 Jan 2025", read: "⏱ 3 min read",
-      body: `
+      title: "Ear Infections in Dogs: Signs & Treatment",
+      category: "Dogs",
+      date: "December 20, 2023",
+      readTime: "3",
+      image: "",
+      content: `
         <p>Ear infections (otitis) are a very common reason pet owners visit vets. Dogs with long, floppy ears like cocker spaniels are especially prone, but any dog can develop one.</p>
-        <h3>Causes</h3>
+        
+        <h2>Causes</h2>
         <ul>
           <li>Bacterial or yeast overgrowth</li>
           <li>Water trapped in the ear after bathing or swimming</li>
           <li>Ear mites (common in puppies)</li>
           <li>Allergies or hormonal imbalances</li>
         </ul>
+        
         <h3>Signs of an Ear Infection</h3>
         <p>Head shaking, scratching at the ear, dark or yellow discharge, bad smell from the ear, redness inside the ear flap, and whimpering when the ear is touched.</p>
+        
         <h3>What NOT to Do</h3>
         <p>Never insert cotton swabs or any object into the ear canal. This can push debris further in and cause damage. Do not use hydrogen peroxide — it can irritate the ear lining.</p>
+        
         <h3>Prevention</h3>
         <p>Clean your dog's ears monthly with a vet-approved ear cleaner. Dry ears thoroughly after baths. Check ears weekly for unusual smells or discharge.</p>
       `
     },
     6: {
-      badge: "Cats", title: "Ringworm in Cats: Is It Dangerous to Humans?",
-      date: "📅 25 Jan 2025", read: "⏱ 4 min read",
-      body: `
+      title: "Ringworm in Cats: A Complete Guide",
+      category: "Cats",
+      date: "December 15, 2023",
+      readTime: "4",
+      image: "",
+      content: `
         <p>Despite its name, ringworm has nothing to do with worms. It is a fungal infection caused by dermatophytes and is one of the few pet diseases that can spread to people (zoonotic).</p>
-        <h3>Symptoms in Cats</h3>
+        
+        <h2>Symptoms in Cats</h2>
         <ul>
           <li>Circular patches of hair loss</li>
           <li>Scaly, crusty skin</li>
           <li>Brittle or broken hairs around patches</li>
           <li>Itching (though some cats show no symptoms at all)</li>
         </ul>
+        
         <h3>Can It Spread to Humans?</h3>
         <p>Yes. You can get ringworm from an infected cat through direct contact. In humans, it appears as a red, ring-shaped, itchy patch on the skin. Children and people with weak immune systems are most at risk.</p>
+        
         <h3>Treatment</h3>
         <p>Antifungal shampoos, creams, or oral medication prescribed by a vet. Treatment usually takes 6–8 weeks. All bedding, grooming tools, and surfaces should be thoroughly cleaned and disinfected.</p>
+        
         <h3>Prevention</h3>
         <p>Wash hands after handling your cat. Keep new cats isolated for 2 weeks before introducing them to other pets. Regular grooming and vet checkups help detect ringworm early.</p>
+      `
+    },
+    7: {
+      title: "Joint Health Supplements for Senior Pets",
+      category: "Nutrition",
+      date: "December 10, 2023",
+      readTime: "6",
+      image: "",
+      content: `
+        <p>As pets age, joint problems become common. Arthritis affects nearly 80% of dogs over 8 years old. Discover natural supplements that can help maintain mobility and reduce pain.</p>
+        
+        <h2>Best Natural Supplements</h2>
+        <ul>
+          <li><strong>Glucosamine</strong> — Helps rebuild cartilage and reduce inflammation</li>
+          <li><strong>Chondroitin</strong> — Prevents cartilage breakdown and improves joint lubrication</li>
+          <li><strong>Omega-3 Fatty Acids</strong> — Reduces inflammation throughout the body</li>
+          <li><strong>Turmeric</strong> — Natural anti-inflammatory with antioxidant properties</li>
+          <li><strong>MSM</strong> — Provides sulfur needed for healthy joint tissue</li>
+        </ul>
+        
+        <h3>Signs Your Pet Has Joint Problems</h3>
+        <ul>
+          <li>Difficulty getting up or lying down</li>
+          <li>Reluctance to jump, climb stairs, or play</li>
+          <li>Limping or favoring a leg</li>
+          <li>Stiffness after resting</li>
+          <li>Behavior changes like irritability</li>
+        </ul>
+        
+        <h3>Lifestyle Changes</h3>
+        <p>Maintain a healthy weight to reduce stress on joints. Provide soft bedding. Regular low-impact exercise like swimming or gentle walks. Ramps instead of stairs for high beds or cars.</p>
+      `
+    },
+    8: {
+      title: "Pet-Proof Your Home: Safety Guide",
+      category: "Prevention",
+      date: "December 5, 2023",
+      readTime: "3",
+      image: "",
+      content: `
+        <p>Many household items can be dangerous to pets. Learn how to create a safe environment for your furry friends.</p>
+        
+        <h2>Kitchen Safety</h2>
+        <ul>
+          <li>Store cleaning products in high cabinets with childproof locks</li>
+          <li>Keep trash cans covered or behind closed doors</li>
+          <li>Never leave chocolate, grapes, raisins, or xylitol within reach</li>
+          <li>Secure food packages that pets could tear open</li>
+        </ul>
+        
+        <h2>Living Room Safety</h2>
+        <ul>
+          <li>Secure electrical cords with cord covers or tape</li>
+          <li>Avoid toxic houseplants like lilies, aloe, and philodendron</li>
+          <li>Keep small objects like coins, batteries, and jewelry off the floor</li>
+          <li>Secure heavy furniture that could tip over</li>
+        </ul>
+        
+        <h2>Bathroom Safety</h2>
+        <ul>
+          <li>Keep toilet lids closed</li>
+          <li>Store medications, vitamins, and supplements in closed cabinets</li>
+          <li>Never leave razors or sharp objects accessible</li>
+          <li>Keep cleaning products and bleach locked away</li>
+        </ul>
+        
+        <h3>Emergency Numbers</h3>
+        <p>Keep your vet's number and the Pet Poison Helpline accessible at all times. Also have the nearest 24-hour emergency vet clinic number ready.</p>
+      `
+    },
+    9: {
+      title: "Heatstroke in Dogs: Prevention Tips",
+      category: "Dogs",
+      date: "November 28, 2023",
+      readTime: "3",
+      image: "",
+      content: `
+        <p>Dogs can overheat quickly in Uganda's hot climate. Heatstroke is a life-threatening emergency that requires immediate action.</p>
+        
+        <h2>Signs of Heatstroke</h2>
+        <ul>
+          <li>Excessive panting or difficulty breathing</li>
+          <li>Drooling excessively</li>
+          <li>Bright red or pale gums</li>
+          <li>Vomiting or diarrhea</li>
+          <li>Weakness, collapse, or seizure</li>
+          <li>Body temperature over 104°F (40°C)</li>
+        </ul>
+        
+        <h3>Emergency First Aid</h3>
+        <p>Move your dog to a cool, shaded area immediately. Offer small amounts of cool (not cold) water. Apply cool water to their body, especially the belly, paws, and ears. Never use ice-cold water as it can cause shock. Get to a vet immediately.</p>
+        
+        <h3>Prevention Tips</h3>
+        <ul>
+          <li>Never leave your dog in a parked car — even with windows open</li>
+          <li>Walk dogs early morning or late evening when temperatures are cooler</li>
+          <li>Provide plenty of fresh, cool water at all times</li>
+          <li>Create shaded areas in your yard</li>
+          <li>Avoid strenuous exercise on hot days</li>
+          <li>Brachycephalic breeds (pugs, bulldogs, boxers) are more at risk</li>
+        </ul>
+      `
+    },
+    10: {
+      title: "Dental Care for Cats",
+      category: "Cats",
+      date: "November 20, 2023",
+      readTime: "4",
+      image: "",
+      content: `
+        <p>Dental disease is one of the most common health problems in cats. By age 3, most cats have some form of dental disease. Good dental care can add years to your cat's life.</p>
+        
+        <h2>Signs of Dental Problems</h2>
+        <ul>
+          <li>Bad breath</li>
+          <li>Yellow or brown buildup on teeth</li>
+          <li>Red, swollen, or bleeding gums</li>
+          <li>Drooling or dropping food</li>
+          <li>Pawing at the mouth</li>
+          <li>Loss of appetite or weight loss</li>
+        </ul>
+        
+        <h3>How to Brush Your Cat's Teeth</h3>
+        <p>Start slowly. Let your cat taste pet-safe toothpaste first. Use a soft finger brush or pet toothbrush. Focus on the outside surfaces of the teeth. Aim for daily brushing, but even 2-3 times per week helps. Never use human toothpaste — it contains fluoride and foaming agents that are harmful to cats.</p>
+        
+        <h3>Other Dental Care Options</h3>
+        <ul>
+          <li>Dental treats and chews approved by VOHC</li>
+          <li>Dental toys that clean while chewing</li>
+          <li>Water additives for plaque control</li>
+          <li>Annual professional dental cleaning at the vet</li>
+        </ul>
+      `
+    },
+    11: {
+      title: "Healthy Treats for Dogs",
+      category: "Nutrition",
+      date: "November 15, 2023",
+      readTime: "3",
+      image: "",
+      content: `
+        <p>Not all treats are healthy. Many commercial treats are high in calories, sugar, and preservatives. Learn which natural treats are good for your dog's health.</p>
+        
+        <h2>Healthy Natural Treats</h2>
+        <ul>
+          <li><strong>Carrots</strong> — Low calorie, good for teeth, rich in vitamin A</li>
+          <li><strong>Apple slices</strong> — (no seeds) Good source of fiber and vitamins</li>
+          <li><strong>Pumpkin puree</strong> — Excellent for digestion, high in fiber</li>
+          <li><strong>Green beans</strong> — Low calorie, good for weight management</li>
+          <li><strong>Blueberries</strong> — Packed with antioxidants, small treat size</li>
+          <li><strong>Watermelon</strong> — (no seeds or rind) Hydrating and low calorie</li>
+          <li><strong>Plain cooked sweet potato</strong> — Rich in fiber and vitamin A</li>
+        </ul>
+        
+        <h2>Treats to Avoid</h2>
+        <ul>
+          <li>Grapes and raisins — can cause kidney failure</li>
+          <li>Chocolate — toxic to dogs</li>
+          <li>Xylitol (sugar-free candy/gum) — causes rapid insulin release</li>
+          <li>Macadamia nuts — can cause weakness and vomiting</li>
+          <li>Onions and garlic — damage red blood cells</li>
+        </ul>
+        
+        <h3>Treat Guidelines</h3>
+        <p>Treats should make up no more than 10% of your dog's daily calories. Adjust meal portions if giving many treats. Use small pieces — most dogs don't care about size, just frequency.</p>
+      `
+    },
+    12: {
+      title: "Flea and Tick Prevention",
+      category: "Prevention",
+      date: "November 10, 2023",
+      readTime: "5",
+      image: "",
+      content: `
+        <p>Fleas and ticks are common in Uganda, especially during rainy seasons. They can cause skin problems, anemia, and transmit serious diseases like ehrlichiosis and babesiosis.</p>
+        
+        <h2>Signs Your Pet Has Fleas</h2>
+        <ul>
+          <li>Excessive scratching, biting, or licking</li>
+          <li>Small black dots (flea dirt) in fur</li>
+          <li>Hair loss, especially on the back and tail base</li>
+          <li>Red bumps or scabs on skin</li>
+          <li>Seeing fleas moving through the fur</li>
+        </ul>
+        
+        <h2>Signs Your Pet Has Ticks</h2>
+        <ul>
+          <li>Small bumps on skin that grow larger as ticks feed</li>
+          <li>Ticks visible attached to skin (especially ears, neck, between toes)</li>
+          <li>Lethargy or weakness (signs of tick-borne disease)</li>
+          <li>Loss of appetite</li>
+          <li>Pale gums (signs of anemia)</li>
+        </ul>
+        
+        <h2>Prevention Methods</h2>
+        <ul>
+          <li><strong>Spot-on treatments</strong> — Applied monthly between shoulder blades</li>
+          <li><strong>Oral medications</strong> — Tablets given monthly or quarterly</li>
+          <li><strong>Flea collars</strong> — Some provide months of protection</li>
+          <li><strong>Sprays and shampoos</strong> — Good for immediate treatment</li>
+          <li><strong>Environmental control</strong> — Wash bedding, vacuum regularly, treat yard</li>
+        </ul>
+        
+        <h3>How to Remove a Tick</h3>
+        <p>Use fine-tipped tweezers. Grasp the tick as close to the skin as possible. Pull upward with steady, even pressure. Don't twist or jerk. Clean the area with rubbing alcohol. Save the tick in a sealed bag in case your pet gets sick.</p>
+        
+        <blockquote>Always consult your veterinarian before starting any flea and tick prevention. Some products safe for dogs are toxic to cats.</blockquote>
       `
     }
   };
 
-  const id = parseInt(window.location.pathname.split('/').pop()) || 1;
-  const a = articles[id] || articles[1];
-  document.getElementById('articleBadge').textContent = a.badge;
-  document.getElementById('articleTitle').textContent = a.title;
-  document.getElementById('articleDate').textContent = a.date;
-  document.getElementById('articleRead').textContent = a.read;
-  document.getElementById('articleBody').innerHTML = a.body;
-  document.title = a.title + ' — PetCheck';
-  </script>
-  {% endif %}
+  // Get article ID from URL
+  const articleId = parseInt(window.location.pathname.split('/').pop());
+  const article = articlesData[articleId] || articlesData[1];
 
-  <!-- Related / CTA -->
-  <div class="article-cta">
-    <h3>Think your pet might be affected?</h3>
-    <p>Upload a photo for an instant AI diagnosis.</p>
-    <a href="/upload" class="btn-primary">Diagnose My Pet →</a>
-  </div>
+  // Render article content
+  function renderArticle() {
+    const container = document.getElementById('articleContent');
+    if (container) {
+      container.innerHTML = `
+        <article>
+          <span class="article-category">${article.category}</span>
+          <h1 class="article-title">${article.title}</h1>
+          <div class="article-meta">
+            <span><i class="far fa-calendar"></i> ${article.date}</span>
+            <span><i class="far fa-clock"></i> ${article.readTime} min read</span>
+          </div>
+          <div class="article-body">${article.content}</div>
+        </article>
+      `;
+    }
+  }
 
-</section>
+  // Render related articles
+  function renderRelated() {
+    const relatedContainer = document.getElementById('relatedArticles');
+    const related = Object.entries(articlesData)
+      .filter(([id]) => parseInt(id) !== articleId)
+      .slice(0, 3);
+    
+    if (relatedContainer && related.length > 0) {
+      relatedContainer.innerHTML = related.map(([id, a]) => `
+        <a href="/articles/${id}" class="related-card">
+          <div class="related-content">
+            <span class="related-category">${a.category}</span>
+            <h4>${a.title}</h4>
+          </div>
+        </a>
+      `).join('');
+    }
+  }
+
+  // Setup share buttons
+  function setupShare() {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(article.title);
+    
+    document.getElementById('shareFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+    document.getElementById('shareWhatsApp').href = `https://wa.me/?text=${title}%20${url}`;
+    document.getElementById('copyLink').onclick = () => {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    };
+  }
+
+  // Initialize page
+  renderArticle();
+  renderRelated();
+  setupShare();
+</script>
 {% endblock %}

@@ -1,606 +1,640 @@
-<!--
-  FILE: templates/index.html (IMPROVED VERSION)
-  - Modern gradient background + pet theme
-  - Enhanced typography (Inter + Syne)
-  - Hamburger navigation (mobile-friendly)
-  - Cards with images and glassmorphism
-  - Fresh color palette: warm orange & deep teal
--->
-
+{% extends "base.html" %}
 {% block title %}PetCheck — AI-Powered Veterinary Care for Your Pet{% endblock %}
 
 {% block extra_css %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  /* Homepage specific overrides */
-  .home-enhanced {
-    --primary-orange: #e0702a;
-    --primary-dark: #c25a1f;
-    --secondary-teal: #216b5e;
-    --secondary-light: #318b7a;
-    --bg-cream: #fef9f0;
-    --bg-warm: #fff7ed;
-    --card-glass: rgba(255, 255, 255, 0.9);
-    --shadow-modern: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 6px 12px -6px rgba(0, 0, 0, 0.02);
+  /* ========== SLIDER STYLES ========== */
+  .hero-slider {
+    position: relative;
+    height: 85vh;
+    min-height: 550px;
+    overflow: hidden;
   }
 
-  .home-enhanced {
-    background: linear-gradient(135deg, #fef7ed 0%, #fff4e8 100%);
-  }
-
-  /* Improved navbar - sticky + glass */
-  .home-enhanced .navbar {
-    background: rgba(255, 251, 245, 0.94) !important;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-
-  /* Hide default nav-links on mobile & show hamburger */
-  @media (max-width: 880px) {
-    .home-enhanced .nav-links {
-      display: none !important;
-    }
-    .hamburger-btn {
-      display: block !important;
-    }
-  }
-  .hamburger-btn {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: #2a2418;
-  }
-  
-  /* Mobile slide menu */
-  .mobile-menu-panel {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 80%;
-    max-width: 300px;
-    height: 100vh;
-    background: rgba(255, 251, 245, 0.98);
-    backdrop-filter: blur(20px);
-    z-index: 1100;
-    box-shadow: 4px 0 28px rgba(0, 0, 0, 0.1);
-    padding: 2rem 1.5rem;
-    transition: left 0.3s ease-in-out;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  .mobile-menu-panel.active {
-    left: 0;
-  }
-  .mobile-menu-panel .close-icon {
-    align-self: flex-end;
-    font-size: 1.6rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--primary-orange);
-  }
-  .mobile-menu-panel a {
-    text-decoration: none;
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #2d2a24;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    transition: color 0.2s;
-  }
-  .mobile-menu-panel a:hover {
-    color: var(--primary-orange);
-  }
-  .mobile-overlay {
-    position: fixed;
+  .slide {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(2px);
-    z-index: 1050;
-    visibility: hidden;
     opacity: 0;
-    transition: 0.2s;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
-  .mobile-overlay.active {
-    visibility: visible;
+
+  .slide.active {
     opacity: 1;
   }
 
-  /* Hero Section */
-  .hero-modern {
-    max-width: 1280px;
-    margin: 2rem auto 1.5rem;
-    padding: 2rem 2rem 3rem;
+  .slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
+  }
+
+  .slide-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-  }
-  .hero-content-modern {
-    flex: 1.2;
-  }
-  .badge-modern {
-    background: #f0e2d4;
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    border-radius: 40px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #b45f2b;
-    margin-bottom: 1rem;
-  }
-  .hero-content-modern h1 {
-    font-size: 3.4rem;
-    font-weight: 800;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    color: #2a2418;
-    font-family: 'Syne', sans-serif;
-  }
-  .gradient-text {
-    background: linear-gradient(125deg, #e0702a, #216b5e);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-  }
-  .hero-desc-modern {
-    font-size: 1.15rem;
-    margin: 1.5rem 0;
-    color: #4a3e32;
-    max-width: 90%;
-  }
-  .btn-primary-modern {
-    background: #e0702a;
-    border: none;
-    padding: 0.9rem 2rem;
-    border-radius: 60px;
-    font-weight: 700;
-    font-size: 1rem;
+    justify-content: center;
+    text-align: center;
     color: white;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
+    padding: 0 20px;
+  }
+
+  .slide-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .slide-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* Buttons */
+  .btn-primary-slide {
+    background: #e0702a;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
     text-decoration: none;
-    transition: 0.2s;
-    box-shadow: 0 8px 14px -8px rgba(224, 112, 42, 0.4);
-  }
-  .btn-primary-modern:hover {
-    background: #c25a1f;
-    transform: translateY(-2px);
-  }
-  .btn-outline-modern {
-    background: transparent;
-    border: 2px solid #216b5e;
-    padding: 0.8rem 1.8rem;
-    border-radius: 60px;
     font-weight: 600;
-    color: #216b5e;
-    cursor: pointer;
-    text-decoration: none;
-    transition: 0.2s;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-  }
-  .btn-outline-modern:hover {
-    background: rgba(33, 107, 94, 0.08);
-    transform: translateY(-2px);
-  }
-  .hero-cta-group {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .hero-stats-modern {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    font-size: 0.9rem;
-    color: #4a3e32;
-  }
-  .hero-stats-modern i {
-    margin-right: 0.3rem;
-  }
-  .phone-mockup-modern {
-    background: rgba(255, 255, 245, 0.7);
-    backdrop-filter: blur(6px);
-    border-radius: 2rem;
-    padding: 1.2rem;
-    box-shadow: var(--shadow-modern);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-  }
-  .phone-screen-modern {
-    background: #1f2a24;
-    border-radius: 1.5rem;
-    padding: 1rem;
-    color: white;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(224,112,42,0.3);
   }
 
-  /* How It Works */
-  .how-it-works-modern {
-    background: rgba(255, 255, 255, 0.85);
-    border-radius: 3rem;
-    max-width: 1200px;
-    margin: 3rem auto;
-    padding: 2.5rem 2rem;
-    text-align: center;
-    backdrop-filter: blur(2px);
+  .btn-primary-slide:hover {
+    background: #c25a1f;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(224,112,42,0.4);
   }
-  .how-it-works-modern h2 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 2rem;
+
+  .btn-outline-slide {
+    background: transparent;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    border: 2px solid white;
+    cursor: pointer;
   }
-  .steps-modern {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
-  }
-  .step-modern {
+
+  .btn-outline-slide:hover {
     background: white;
-    border-radius: 2rem;
-    padding: 1.5rem;
-    flex: 1;
-    min-width: 210px;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
-    transition: transform 0.2s, box-shadow 0.2s;
+    color: #e0702a;
+    transform: translateY(-3px);
   }
-  .step-modern:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 15px 30px -12px rgba(0, 0, 0, 0.1);
+
+  .btn-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
-  .step-img-modern {
-    width: 100%;
-    height: 130px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 1.2rem;
-    margin-bottom: 0.8rem;
-  }
-  .step-icon-modern {
-    font-size: 2rem;
-    background: #fcf3ea;
-    width: 70px;
-    height: 70px;
+
+  /* Slider Navigation */
+  .slider-prev, .slider-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(0,0,0,0.5);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
-  }
-  .step-modern h3 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-  .step-modern p {
-    color: #6b5e50;
-    font-size: 0.9rem;
+    cursor: pointer;
+    z-index: 10;
+    color: white;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
   }
 
-  /* Features with card images */
-  .features-modern {
-    max-width: 1280px;
-    margin: 3rem auto;
-    padding: 0 2rem;
+  .slider-prev { left: 20px; }
+  .slider-next { right: 20px; }
+
+  .slider-prev:hover, .slider-next:hover {
+    background: #e0702a;
+    transform: translateY(-50%) scale(1.1);
   }
-  .features-modern h2 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 2rem;
+
+  .slider-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: #e0702a;
+    width: 30px;
+    border-radius: 6px;
+  }
+
+  /* Stats Section */
+  .stats-bar {
+    background: white;
+    padding: 40px 5%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 30px;
     text-align: center;
-    margin-bottom: 2rem;
   }
-  .feature-grid-modern {
+
+  .stat-card h3 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #e0702a;
+  }
+
+  .stat-card p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+
+  /* Features Section */
+  .features-section {
+    padding: 60px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #1a1d26;
+  }
+
+  .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
+    gap: 30px;
   }
-  .feature-card-modern {
+
+  .feature-card {
     background: white;
-    border-radius: 1.8rem;
-    padding: 1.5rem;
-    transition: all 0.25s;
-    box-shadow: var(--shadow-modern);
-    border: 1px solid rgba(224, 112, 42, 0.1);
+    border-radius: 20px;
+    padding: 30px 24px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(224,112,42,0.1);
+    position: relative;
+    overflow: hidden;
   }
-  .feature-card-modern:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 25px 40px -18px rgba(0, 0, 0, 0.15);
-  }
-  .card-img-modern {
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 1rem;
-    margin-bottom: 1rem;
+    height: 4px;
+    background: linear-gradient(90deg, #e0702a, #f0a06e);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
   }
-  .feat-icon-modern {
+
+  .feature-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    border-color: rgba(224,112,42,0.2);
+  }
+
+  .feature-icon {
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, #fef0e4, #fff5ec);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
     font-size: 2rem;
-    background: #fef0e4;
-    padding: 0.5rem;
-    border-radius: 1rem;
-    display: inline-block;
-    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
   }
-  .feature-card-modern h3 {
-    font-family: 'Syne', sans-serif;
+
+  .feature-card:hover .feature-icon {
+    background: linear-gradient(135deg, #e0702a, #f0a06e);
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .feature-card h3 {
+    font-size: 1.3rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 12px;
+    color: #1a1d26;
   }
-  .feature-card-modern p {
-    color: #6b5e50;
+
+  .feature-card p {
+    color: #666;
     font-size: 0.9rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    margin-bottom: 15px;
   }
-  .highlight-card {
-    border-bottom: 4px solid #e0702a;
+
+  .feature-link {
+    color: #e0702a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover .feature-link {
+    gap: 10px;
+    color: #c25a1f;
+  }
+
+  /* How It Works */
+  .how-it-works {
+    background: #f5f0e8;
+    padding: 60px 5%;
+  }
+
+  .steps-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .step-card {
+    flex: 1;
+    text-align: center;
+    min-width: 200px;
+    background: white;
+    padding: 25px 20px;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+
+  .step-number {
+    width: 55px;
+    height: 55px;
+    background: #e0702a;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto 15px;
+  }
+
+  .step-icon {
+    font-size: 2rem;
+    margin: 10px 0;
   }
 
   /* CTA Banner */
-  .cta-banner-modern {
-    max-width: 1000px;
-    margin: 3rem auto;
-    padding: 0 2rem;
-  }
-  .cta-box-modern {
-    background: linear-gradient(125deg, rgba(33, 107, 94, 0.08), rgba(224, 112, 42, 0.08));
-    backdrop-filter: blur(4px);
-    border-radius: 2.5rem;
-    padding: 2.5rem;
+  .cta-banner {
+    background: linear-gradient(135deg, #216b5e, #1a5248);
+    padding: 60px 5%;
     text-align: center;
-    border: 1px solid rgba(224, 112, 42, 0.2);
-  }
-  .cta-box-modern h2 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-  }
-  .cta-box-modern p {
-    font-size: 1.1rem;
-    color: #4a3e32;
-    margin-bottom: 1.5rem;
+    color: white;
   }
 
-  /* Weather strip */
-  .weather-strip {
-    text-align: center;
-    margin: 2rem auto 3rem;
-    padding: 1rem;
-    font-size: 0.85rem;
-    color: #6b5e50;
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    max-width: 800px;
-  }
-  .weather-strip i {
-    margin-right: 0.3rem;
+  .cta-banner h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
   }
 
-  @media (max-width: 680px) {
-    .hero-content-modern h1 {
-      font-size: 2.2rem;
-    }
-    .hero-desc-modern {
-      max-width: 100%;
-    }
-    .phone-mockup-modern {
-      display: none;
-    }
-    .hero-stats-modern {
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-    .cta-box-modern h2 {
-      font-size: 1.4rem;
-    }
+  .cta-banner p {
+    margin-bottom: 25px;
+    opacity: 0.9;
+  }
+
+  .btn-white {
+    background: white;
+    color: #216b5e;
+    padding: 12px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-white:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 768px) {
+    .slide-content h1 { font-size: 1.8rem; }
+    .slide-content p { font-size: 1rem; }
+    .slider-prev, .slider-next { width: 40px; height: 40px; font-size: 1.2rem; }
+    .btn-primary-slide, .btn-outline-slide { padding: 10px 20px; font-size: 0.9rem; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="home-enhanced">
-  <!-- Custom Hamburger Nav (overrides base nav for homepage) -->
-  <div style="position: sticky; top: 0; z-index: 100; background: rgba(255,251,245,0.94); backdrop-filter: blur(12px); border-bottom: 1px solid #f0e2d4;">
-    <div style="max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-      <div class="logo" style="display: flex; align-items: center; gap: 10px;">
-        <i class="fas fa-paw" style="font-size: 2rem; color: #e0702a;"></i>
-        <h1 style="font-size: 1.75rem; font-weight: 800; background: linear-gradient(135deg, #e0702a, #c25a1f); background-clip: text; -webkit-background-clip: text; color: transparent;">PetCheck</h1>
+<!-- ========== HERO SLIDER ========== -->
+<div class="hero-slider" id="heroSlider">
+  
+  <!-- SLIDE 1 -->
+  <div class="slide active" style="background-image: url('https://i.imgur.com/11MFKhn.jpeg');">
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <h1>❤️ Compassionate Pet Care</h1>
+      <p>Your pet's health and happiness is our priority. Gentle, loving care for your furry family members.</p>
+      <div class="btn-group">
+        <a href="/upload" class="btn-primary-slide"><i class="fas fa-heartbeat"></i> Health Check</a>
+        <a href="/vets" class="btn-outline-slide"><i class="fas fa-map-marker-alt"></i> Find a Vet</a>
       </div>
-      <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
-        <li><a href="/" style="text-decoration: none; font-weight: 500; color: #3a2e24; transition: color 0.2s;">Home</a></li>
-        <li><a href="/upload" style="text-decoration: none; font-weight: 500; color: #3a2e24; transition: color 0.2s;">Diagnose</a></li>
-        <li><a href="/articles" style="text-decoration: none; font-weight: 500; color: #3a2e24; transition: color 0.2s;">Articles</a></li>
-        <li><a href="/forum" style="text-decoration: none; font-weight: 500; color: #3a2e24; transition: color 0.2s;">Forum</a></li>
-        <li><a href="/vets" style="text-decoration: none; font-weight: 500; color: #3a2e24; transition: color 0.2s;">Find a Vet</a></li>
-      </ul>
-      <div style="display: flex; gap: 1rem; align-items: center;">
-        {% if user %}
-          <span style="font-weight:500; color:#3a2e24;">Hi, {{ user.name }}</span>
-          <a href="/profile" style="background: transparent; border: none; font-weight: 600; color: #216b5e; text-decoration: none; transition: color 0.2s;">Profile</a>
-          <a href="/logout" style="background: #e0702a; padding: 0.5rem 1.2rem; border-radius: 40px; color: white; text-decoration: none; transition: background 0.2s;">Logout</a>
-        {% else %}
-          <a href="/login" style="background: transparent; border: none; font-weight: 600; color: #216b5e; text-decoration: none; transition: color 0.2s;">Log In</a>
-          <a href="/register" style="background: #e0702a; padding: 0.5rem 1.2rem; border-radius: 40px; color: white; text-decoration: none; transition: background 0.2s;">Sign Up Free →</a>
-        {% endif %}
-      </div>
-      <button class="hamburger-btn" id="hamburgerBtnHome" aria-label="Menu"><i class="fas fa-bars"></i></button>
     </div>
   </div>
 
-  <!-- Mobile Menu Panel -->
-  <div class="mobile-menu-panel" id="mobileMenuHome">
-    <button class="close-icon" id="closeMenuHome"><i class="fas fa-times"></i></button>
-    <a href="/">Home</a>
-    <a href="/upload">Diagnose</a>
-    <a href="/articles">Articles</a>
-    <a href="/forum">Forum</a>
-    <a href="/vets">Find a Vet</a>
-    {% if user %}
-      <a href="/profile">Profile</a>
-      <a href="/logout">Logout</a>
-    {% else %}
-      <a href="/login">Log In</a>
-      <a href="/register">Sign Up Free →</a>
-    {% endif %}
+  <!-- SLIDE 2 -->
+  <div class="slide" style="background-image: url('https://i.imgur.com/7JnBmwJ.jpeg');">
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <h1>🐱 Gentle, Compassionate Care</h1>
+      <p>Your cat deserves the best care. Our veterinarians provide gentle examinations and treatment.</p>
+      <div class="btn-group">
+        <a href="/vets" class="btn-primary-slide"><i class="fas fa-stethoscope"></i> Find a Vet</a>
+        <a href="/upload" class="btn-outline-slide"><i class="fas fa-camera"></i> Quick Diagnosis</a>
+      </div>
+    </div>
   </div>
-  <div class="mobile-overlay" id="overlayHome"></div>
 
-  <!-- Hero Section -->
-  <section class="hero-modern">
-    <div class="hero-content-modern">
-      <span class="badge-modern"><i class="fas fa-microchip"></i> AI-Powered Veterinary Care</span>
-      <h1>Know what's wrong <span class="gradient-text">before it gets worse.</span></h1>
-      <p class="hero-desc-modern">Upload a photo of your dog or cat. PetCheck's AI detects possible diseases in seconds and connects you to local vets in Entebbe.</p>
-      <div class="hero-cta-group">
-        <a href="/upload" class="btn-primary-modern"><i class="fas fa-camera"></i> Diagnose Your Pet →</a>
-        <a href="/vets" class="btn-outline-modern"><i class="fas fa-map-marker-alt"></i> Find a Vet Near You</a>
-      </div>
-      <div class="hero-stats-modern">
-        <span><i class="fas fa-check-circle" style="color:#216b5e;"></i> 96% accuracy on 8+ conditions</span>
-        <span><i class="fas fa-clock"></i> Instant AI analysis</span>
+  <!-- SLIDE 3 -->
+  <div class="slide" style="background-image: url('https://i.imgur.com/p7mm016.jpeg');">
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <h1>🐕 Trusted Veterinary Experts</h1>
+      <p>Experienced African veterinarians dedicated to keeping your pets healthy and happy.</p>
+      <div class="btn-group">
+        <a href="/vets" class="btn-primary-slide"><i class="fas fa-clinic-medical"></i> Find Clinic</a>
+        <a href="/articles" class="btn-outline-slide"><i class="fas fa-book"></i> Health Tips</a>
       </div>
     </div>
-    <div class="hero-visual-modern">
-      <div class="phone-mockup-modern">
-        <div class="phone-screen-modern">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span>🐕 Analyzing...</span>
-            <span style="font-size:0.7rem;">AI</span>
-          </div>
-          <div style="margin-top: 1rem;">
-            <div style="font-size:0.7rem; opacity:0.7; letter-spacing:1px;">DETECTED CONDITION</div>
-            <div style="font-size:1.3rem; font-weight:700; color:#ffaa77;">Skin Infection</div>
-            <div style="font-size:0.8rem; margin:0.3rem 0;">87% Confidence</div>
-            <div style="font-size:0.7rem; background:rgba(255,255,255,0.1); padding:0.5rem; border-radius:8px;">Clean the area. Visit a vet.</div>
-          </div>
-        </div>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide" style="background-image: url('https://i.imgur.com/U83CdGv.jpeg');">
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <h1>👨🏾‍⚕️ Expert African Veterinarians</h1>
+      <p>Professional veterinary care from qualified African doctors who understand your pet's needs.</p>
+      <div class="btn-group">
+        <a href="/register" class="btn-primary-slide"><i class="fas fa-user-md"></i> Book Appointment</a>
+        <a href="/forum" class="btn-outline-slide"><i class="fas fa-comments"></i> Ask Community</a>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- How It Works with images -->
-  <section class="how-it-works-modern">
-    <h2>How PetCheck Works</h2>
-    <div class="steps-modern">
-      <div class="step-modern">
-        <div class="step-img-modern" style="background-image: url('https://picsum.photos/id/106/300/180');"></div>
-        <div class="step-icon-modern">📸</div>
-        <h3>1. Upload a Photo</h3>
-        <p>Take a clear photo or short video of your pet showing the affected area.</p>
-      </div>
-      <div class="step-modern">
-        <div class="step-img-modern" style="background-image: url('https://picsum.photos/id/2/300/180');"></div>
-        <div class="step-icon-modern">🤖</div>
-        <h3>2. AI Analyzes It</h3>
-        <p>Our deep learning model scans the image and identifies possible health issues.</p>
-      </div>
-      <div class="step-modern">
-        <div class="step-img-modern" style="background-image: url('https://picsum.photos/id/104/300/180');"></div>
-        <div class="step-icon-modern">💊</div>
-        <h3>3. Get Guidance</h3>
-        <p>Receive home care advice and connect to nearby veterinary professionals.</p>
+  <!-- SLIDE 5 -->
+  <div class="slide" style="background-image: url('https://i.imgur.com/k5h3Eyk.jpeg');">
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <h1>🐈 Specialized Cat Care</h1>
+      <p>Understanding your cat's unique needs. Gentle, stress-free veterinary visits.</p>
+      <div class="btn-group">
+        <a href="/upload" class="btn-primary-slide"><i class="fas fa-camera"></i> AI Diagnosis</a>
+        <a href="/vets" class="btn-outline-slide"><i class="fas fa-phone-alt"></i> Contact Vet</a>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Everything Your Pet Needs - Cards with Images -->
-  <section class="features-modern">
-    <h2>Everything Your Pet Needs</h2>
-    <div class="feature-grid-modern">
-      <div class="feature-card-modern">
-        <img class="card-img-modern" src="https://picsum.photos/id/157/400/220" alt="AI Diagnosis">
-        <div class="feat-icon-modern">🔬</div>
-        <h3>Image & Video Diagnosis</h3>
-        <p>Upload photos or short clips for AI-powered analysis of 8+ common pet conditions.</p>
-      </div>
-      <div class="feature-card-modern highlight-card">
-        <img class="card-img-modern" src="https://picsum.photos/id/20/400/220" alt="Vet Finder">
-        <div class="feat-icon-modern">📍</div>
-        <h3>Local Vet Finder</h3>
-        <p>Find verified veterinarians in Entebbe Divisions A & B near you.</p>
-      </div>
-      <div class="feature-card-modern">
-        <img class="card-img-modern" src="https://picsum.photos/id/219/400/220" alt="Health Articles">
-        <div class="feat-icon-modern">📖</div>
-        <h3>Health Articles</h3>
-        <p>Learn about pet diseases, nutrition, and preventive care from expert content.</p>
-      </div>
-      <div class="feature-card-modern">
-        <img class="card-img-modern" src="https://picsum.photos/id/140/400/220" alt="Community Forum">
-        <div class="feat-icon-modern">💬</div>
-        <h3>Community Forum</h3>
-        <p>Ask questions, share experiences and get advice from other pet owners and vets.</p>
-      </div>
+  <!-- Navigation Arrows -->
+  <div class="slider-prev" onclick="changeSlide(-1)">❮</div>
+  <div class="slider-next" onclick="changeSlide(1)">❯</div>
+  
+  <!-- Dots -->
+  <div class="slider-dots" id="sliderDots"></div>
+</div>
+
+<!-- ========== STATS SECTION ========== -->
+<div class="stats-bar">
+  <div class="stats-container">
+    <div class="stat-card">
+      <h3>2,500+</h3>
+      <p>Pets Helped</p>
     </div>
-  </section>
-
-  <!-- CTA Banner -->
-  <section class="cta-banner-modern">
-    <div class="cta-box-modern">
-      <h2>Your pet can't tell you what's wrong.</h2>
-      <p>PetCheck can. Try it free today — no account needed.</p>
-      <a href="/upload" class="btn-primary-modern" style="margin-top:0.8rem; display:inline-flex;">Diagnose Now — It's Free →</a>
+    <div class="stat-card">
+      <h3>50+</h3>
+      <p>Expert Vets</p>
     </div>
-  </section>
-
-  <!-- Weather / Info Strip -->
-  <div class="weather-strip">
-    <span><i class="fas fa-temperature-low"></i> 79°F · Mostly cloudy</span>
-    <span><i class="far fa-clock"></i> 4:02 PM · 5/28/2026</span>
-    <span><i class="fas fa-map-marker-alt"></i> Entebbe, Uganda</span>
-    <span><i class="fas fa-paw"></i> AI-powered veterinary guidance</span>
+    <div class="stat-card">
+      <h3>98%</h3>
+      <p>Success Rate</p>
+    </div>
+    <div class="stat-card">
+      <h3>24/7</h3>
+      <p>AI Support</p>
+    </div>
   </div>
 </div>
 
+<!-- ========== FEATURES SECTION ========== -->
+<div class="features-section">
+  <h2 class="section-title">🐾 Everything Your Pet Needs</h2>
+  <div class="features-grid">
+    
+    <div class="feature-card" onclick="location.href='/upload'">
+      <div class="feature-icon">🔬</div>
+      <h3>AI Image Diagnosis</h3>
+      <p>Upload a photo for instant analysis of 8+ common pet conditions. Get results in seconds with confidence scores.</p>
+      <div class="feature-link">Learn more →</div>
+    </div>
+
+    <div class="feature-card" onclick="location.href='/vets'">
+      <div class="feature-icon">📍</div>
+      <h3>Local Vet Finder</h3>
+      <p>Find verified veterinarians in Entebbe Divisions A & B near you. Contact them directly with one click.</p>
+      <div class="feature-link">Find a vet →</div>
+    </div>
+
+    <div class="feature-card" onclick="location.href='/articles'">
+      <div class="feature-icon">📖</div>
+      <h3>Health Articles</h3>
+      <p>Expert-written guides on pet diseases, nutrition, and preventive care. Learn how to keep your pet healthy.</p>
+      <div class="feature-link">Read articles →</div>
+    </div>
+
+    <div class="feature-card" onclick="location.href='/forum'">
+      <div class="feature-icon">💬</div>
+      <h3>Community Forum</h3>
+      <p>Ask questions and share experiences with other pet owners and vets. Get support from the community.</p>
+      <div class="feature-link">Join discussion →</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== HOW IT WORKS ========== -->
+<div class="how-it-works">
+  <h2 class="section-title">📋 How PetCheck Works</h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div class="step-icon">📸</div>
+      <h3>Upload a Photo</h3>
+      <p>Take a clear photo of your pet showing the affected area. Make sure it's well-lit and focused.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div class="step-icon">🤖</div>
+      <h3>AI Analyzes</h3>
+      <p>Our deep learning model scans the image and identifies possible health conditions.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div class="step-icon">💊</div>
+      <h3>Get Results</h3>
+      <p>Receive diagnosis, confidence score, and home care advice. Connect to a vet if needed.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CTA BANNER ========== -->
+<div class="cta-banner">
+  <h2>Your pet can't tell you what's wrong.</h2>
+  <p>PetCheck can. Try it free today — no account needed.</p>
+  <a href="/upload" class="btn-white"><i class="fas fa-camera"></i> Diagnose Now — It's Free →</a>
+</div>
+
 <script>
-  // Hamburger logic for homepage
-  (function() {
-    const hamburgerHome = document.getElementById('hamburgerBtnHome');
-    const mobileMenuHome = document.getElementById('mobileMenuHome');
-    const overlayHome = document.getElementById('overlayHome');
-    const closeMenuHome = document.getElementById('closeMenuHome');
-    
-    if (hamburgerHome) {
-      hamburgerHome.addEventListener('click', function() {
-        mobileMenuHome.classList.add('active');
-        overlayHome.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      });
-    }
-    
-    function closeMobileMenu() {
-      if (mobileMenuHome) mobileMenuHome.classList.remove('active');
-      if (overlayHome) overlayHome.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    if (closeMenuHome) closeMenuHome.addEventListener('click', closeMobileMenu);
-    if (overlayHome) overlayHome.addEventListener('click', closeMobileMenu);
-    
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && mobileMenuHome && mobileMenuHome.classList.contains('active')) {
-        closeMobileMenu();
-      }
+  // ========== SLIDER SCRIPT ==========
+  let currentIndex = 0;
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('sliderDots');
+  let autoSlideInterval;
+
+  function createDots() {
+    dotsContainer.innerHTML = '';
+    slides.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (index === currentIndex) dot.classList.add('active');
+      dot.onclick = () => goToSlide(index);
+      dotsContainer.appendChild(dot);
     });
-  })();
+  }
+
+  function updateDots() {
+    document.querySelectorAll('.dot').forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentIndex);
+    });
+  }
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+    });
+    currentIndex = index;
+    updateDots();
+  }
+
+  function nextSlide() {
+    let newIndex = currentIndex + 1;
+    if (newIndex >= slides.length) newIndex = 0;
+    showSlide(newIndex);
+  }
+
+  function prevSlide() {
+    let newIndex = currentIndex - 1;
+    if (newIndex < 0) newIndex = slides.length - 1;
+    showSlide(newIndex);
+  }
+
+  function goToSlide(index) {
+    showSlide(index);
+    resetAutoSlide();
+  }
+
+  function changeSlide(direction) {
+    if (direction === 1) nextSlide();
+    else prevSlide();
+    resetAutoSlide();
+  }
+
+  function startAutoSlide() {
+    autoSlideInterval = setInterval(() => nextSlide(), 5000);
+  }
+
+  function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    startAutoSlide();
+  }
+
+  // Initialize
+  createDots();
+  startAutoSlide();
+
+  // Pause on hover
+  const slider = document.getElementById('heroSlider');
+  if (slider) {
+    slider.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+    slider.addEventListener('mouseleave', startAutoSlide);
+  }
 </script>
 {% endblock %}

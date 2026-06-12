@@ -2,85 +2,106 @@
 {% block title %}Diagnosis Results — PetCheck{% endblock %}
 
 {% block content %}
-<section class="results-page">
+<section class="results-page" style="max-width: 800px; margin: 0 auto; padding: 40px 20px;">
+  
   {% if result %}
   
-  {% if result.error %}
-  <div style="background: #fff5f5; border: 2px solid #e74c3c; border-radius: 20px; padding: 2rem; text-align: center;">
-    <div style="font-size: 4rem;">⚠️</div>
-    <h2 style="color: #c0392b;">Error</h2>
-    <p>{{ result.message }}</p>
-    <a href="/upload" class="btn-primary" style="margin-top: 1rem;">Try Again</a>
+  <!-- Not a Pet Error -->
+  {% if result.error == 'not_a_pet' %}
+  <div style="background: linear-gradient(135deg, #fff5f5, #ffe0e0); border: 2px solid #e74c3c; border-radius: 20px; padding: 40px; text-align: center;">
+    <div style="font-size: 4rem; margin-bottom: 15px;">🐕‍🦺❌</div>
+    <h2 style="color: #c0392b; margin-bottom: 15px;">No Cat or Dog Detected</h2>
+    <p style="color: #555; margin-bottom: 20px; white-space: pre-line;">{{ result.message }}</p>
+    <a href="/upload" class="btn-primary">Try Another Image</a>
   </div>
-  {% else %}
   
-  <div class="results-header">
-    <h1>Diagnosis Complete 🐾</h1>
+  <!-- Blurry Image Error -->
+  {% elif result.error == 'blurry_image' %}
+  <div style="background: linear-gradient(135deg, #fff8e1, #ffecb3); border: 2px solid #ff9800; border-radius: 20px; padding: 40px; text-align: center;">
+    <div style="font-size: 4rem; margin-bottom: 15px;">📸❌</div>
+    <h2 style="color: #e65100; margin-bottom: 15px;">Image Too Blurry</h2>
+    <p style="color: #555; margin-bottom: 20px; white-space: pre-line;">{{ result.message }}</p>
+    <a href="/upload" class="btn-primary">Try Another Image</a>
+  </div>
+  
+  <!-- Model Not Ready Error -->
+  {% elif result.error == 'no_model' %}
+  <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 20px; padding: 40px; text-align: center;">
+    <div style="font-size: 4rem; margin-bottom: 15px;">🤖</div>
+    <h2 style="color: #856404;">Model Not Trained</h2>
+    <p>{{ result.message }}</p>
+    <a href="/" class="btn-primary">Go Home</a>
+  </div>
+  
+  <!-- Successful Diagnosis -->
+  {% elif result.success %}
+  <div style="background: #e8f5e9; border: 1px solid #4caf50; border-radius: 16px; padding: 15px; margin-bottom: 20px; text-align: center;">
+    <p style="color: #2e7d32;">✅ Pet detected successfully! Quality score: {{ result.quality_score }}</p>
+  </div>
+  
+  <div class="results-header" style="text-align: center; margin-bottom: 30px;">
+    <h1 style="font-size: 2rem;">Diagnosis Complete 🐾</h1>
     <p>Here's what our AI found based on your pet's photo.</p>
-    {% if result.mode == 'demo' %}
-    <div class="demo-banner" style="background: #fff3cd; padding: 0.5rem; border-radius: 8px; margin-top: 1rem;">
-      ℹ️ Demo Mode - Train the AI for real predictions
-    </div>
-    {% endif %}
   </div>
 
-  <div class="results-grid">
+  <div class="results-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
     <!-- Main result card -->
-    <div class="result-main">
-      <div class="result-disease-card {% if result.disease == 'Healthy' %}healthy{% else %}warning{% endif %}">
-        <div class="result-icon">{% if result.disease == 'Healthy' %}✅{% else %}⚠️{% endif %}</div>
-        <h2>{{ result.disease }}</h2>
-        <div class="confidence-bar">
-          <div class="conf-label">AI Confidence</div>
-          <div class="conf-track">
-            <div class="conf-fill" style="width: {{ result.confidence }}%"></div>
+    <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <div style="text-align: center; padding: 20px; border-radius: 16px; background: {% if result.disease == 'Healthy' %}#e8f5e9{% else %}#fff3e0{% endif %};">
+        <div style="font-size: 3rem;">{% if result.disease == 'Healthy' %}✅{% else %}⚠️{% endif %}</div>
+        <h2 style="font-size: 1.5rem; margin: 10px 0;">{{ result.disease }}</h2>
+        <div style="margin: 15px 0;">
+          <div style="font-size: 0.8rem; color: #666;">AI Confidence</div>
+          <div style="height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; width: 100%;">
+            <div style="height: 100%; background: #e0702a; width: {{ result.confidence }}%; border-radius: 5px;"></div>
           </div>
-          <div class="conf-pct">{{ result.confidence }}%</div>
+          <div style="margin-top: 5px; font-weight: bold;">{{ result.confidence }}%</div>
         </div>
       </div>
 
-      <div class="advice-box">
-        <h3>💊 Home Care Advice</h3>
+      <div style="margin-top: 20px; padding: 15px; background: #f5f0e8; border-radius: 12px;">
+        <h3 style="margin-bottom: 10px;">💊 Home Care Advice</h3>
         <p>{{ result.advice }}</p>
       </div>
 
-      <div class="disclaimer">
-        ⚠️ <strong>Important:</strong> This is an AI-based screening tool, not a professional diagnosis. Always consult a qualified veterinarian for proper treatment.
+      <div style="margin-top: 15px; padding: 10px; background: #fff3e0; border-radius: 12px; font-size: 0.8rem;">
+        ⚠️ <strong>Important:</strong> This is an AI-based screening tool, not a professional diagnosis. Always consult a qualified veterinarian.
       </div>
     </div>
 
     <!-- Side panel -->
-    <div class="result-side">
-      <div class="other-predictions">
-        <h3>Other Possibilities</h3>
-        {% for pred in result.all_predictions %}
-        {% if pred.disease != result.disease %}
-        <div class="pred-row">
-          <span class="pred-name">{{ pred.disease }}</span>
-          <div class="pred-bar-track">
-            <div class="pred-bar-fill" style="width: {{ pred.confidence }}%"></div>
-          </div>
-          <span class="pred-pct">{{ pred.confidence }}%</span>
+    <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <h3 style="margin-bottom: 15px;">Other Possibilities</h3>
+      {% for pred in result.all_predictions %}
+      {% if pred.disease != result.disease %}
+      <div style="margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+          <span>{{ pred.disease }}</span>
+          <span>{{ pred.confidence }}%</span>
         </div>
-        {% endif %}
-        {% endfor %}
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
+          <div style="height: 100%; background: #e0702a; width: {{ pred.confidence }}%;"></div>
+        </div>
       </div>
+      {% endif %}
+      {% endfor %}
 
-      <div class="result-actions">
-        <a href="/vets" class="btn-primary">📍 Find a Vet Nearby</a>
-        <a href="/upload" class="btn-ghost">🔄 Try Another Photo</a>
+      <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <a href="/vets" class="btn-primary" style="text-align: center; text-decoration: none;">📍 Find a Vet Nearby</a>
+        <a href="/upload" class="btn-ghost" style="text-align: center; text-decoration: none;">🔄 Try Another Photo</a>
       </div>
     </div>
   </div>
   {% endif %}
   
   {% else %}
-  <div class="no-result">
-    <div class="no-result-icon">🐾</div>
+  <div style="text-align: center; padding: 60px; background: white; border-radius: 20px;">
+    <div style="font-size: 4rem;">🐾</div>
     <h2>No diagnosis yet</h2>
     <p>Upload a photo of your pet to get started.</p>
     <a href="/upload" class="btn-primary">Start Diagnosis →</a>
   </div>
   {% endif %}
+  
 </section>
 {% endblock %}

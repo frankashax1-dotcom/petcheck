@@ -1,104 +1,462 @@
 {% extends "base.html" %}
 {% block title %}My Profile — PetCheck{% endblock %}
 
+{% block extra_css %}
+<style>
+  .profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 5%;
+  }
+
+  /* Welcome Banner */
+  .welcome-banner {
+    background: linear-gradient(135deg, #e0702a, #c25a1f);
+    border-radius: 20px;
+    padding: 30px;
+    color: white;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .welcome-text h1 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+  }
+
+  .role-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    margin-top: 8px;
+  }
+
+  .btn-logout {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .btn-logout:hover {
+    background: rgba(255,255,255,0.3);
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #e0702a;
+  }
+
+  .stat-label {
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 5px;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1a1d26;
+  }
+
+  /* Pet Owner Styles */
+  .pets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .pet-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .pet-avatar {
+    width: 60px;
+    height: 60px;
+    background: #fef0e4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .pet-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+  }
+
+  .pet-info p {
+    color: #666;
+    font-size: 0.8rem;
+  }
+
+  .add-pet-btn {
+    background: #e0702a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .add-pet-form {
+    background: #f5f0e8;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  .inline-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .inline-form input, .inline-form select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    flex: 1;
+  }
+
+  .diagnosis-list {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .diagnosis-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .diagnosis-item:last-child {
+    border-bottom: none;
+  }
+
+  .diagnosis-icon {
+    width: 45px;
+    height: 45px;
+    background: #fef0e4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .diagnosis-info {
+    flex: 1;
+  }
+
+  .diagnosis-info strong {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .diagnosis-info p {
+    color: #666;
+    font-size: 0.8rem;
+  }
+
+  /* Vet Styles */
+  .vet-dashboard {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .vet-info-card {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+    background: #f5f0e8;
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+
+  .vet-avatar {
+    width: 80px;
+    height: 80px;
+    background: #e0702a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+  }
+
+  .vet-details h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+  }
+
+  .vet-specialty-badge {
+    background: #e0702a20;
+    color: #e0702a;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-block;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 16px;
+    color: #666;
+  }
+
+  .empty-state a {
+    color: #e0702a;
+  }
+
+  @media (max-width: 768px) {
+    .welcome-banner { flex-direction: column; text-align: center; }
+    .pets-grid { grid-template-columns: 1fr; }
+    .vet-info-card { flex-direction: column; text-align: center; }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="profile-page">
-
-  <!-- Header -->
-  <div class="profile-header">
-    <div class="profile-avatar">{{ user.name[0].upper() }}</div>
-    <div class="profile-info">
-      <h1>{{ user.name }}</h1>
-      <span class="role-badge">{{ '🩺 Vet Doctor' if user.role == 'vet' else '🐾 Pet Owner' }}</span>
-      <p class="profile-email">{{ user.email }}</p>
+<div class="profile-container">
+  
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h1>Welcome, {{ user.name if user else session.get('user_name') }}! 👋</h1>
+      {% if session.get('user_role') == 'vet' %}
+        <span class="role-badge"><i class="fas fa-stethoscope"></i> Veterinarian Account</span>
+      {% else %}
+        <span class="role-badge"><i class="fas fa-paw"></i> Pet Owner Account</span>
+      {% endif %}
     </div>
-    <a href="/logout" class="btn-ghost">Log Out</a>
+    <a href="/logout" class="btn-logout">Logout</a>
   </div>
 
+  <!-- ========== PET OWNER VIEW ========== -->
+  {% if session.get('user_role') == 'pet_owner' %}
+  
   <!-- Stats -->
-  <div class="profile-stats">
+  <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-num">{{ diagnoses|length }}</div>
-      <div class="stat-label">Diagnoses</div>
+      <div class="stat-number">{{ pets|length }}</div>
+      <div class="stat-label">Registered Pets</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num">{{ pets|length }}</div>
-      <div class="stat-label">Pets Registered</div>
+      <div class="stat-number">{{ diagnoses|length }}</div>
+      <div class="stat-label">AI Diagnoses</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num">🐾</div>
-      <div class="stat-label">PetCheck Member</div>
+      <div class="stat-number">🐾</div>
+      <div class="stat-label">Member</div>
     </div>
   </div>
 
-  <div class="profile-grid">
-
-    <!-- My Pets -->
-    <div class="profile-section">
-      <div class="section-header">
-        <h2>My Pets</h2>
-        <button class="btn-primary" id="addPetBtn" style="padding:0.4rem 1rem;font-size:0.85rem">+ Add Pet</button>
+  <!-- My Pets Section -->
+  <div class="section-title">🐕 My Pets</div>
+  
+  <button class="add-pet-btn" id="addPetBtn">+ Add New Pet</button>
+  
+  <div class="add-pet-form" id="addPetForm">
+    <form method="POST" action="/add-pet">
+      <div class="inline-form">
+        <input type="text" name="name" placeholder="Pet name" required>
+        <select name="species">
+          <option value="dog">🐕 Dog</option>
+          <option value="cat">🐈 Cat</option>
+        </select>
+        <input type="text" name="breed" placeholder="Breed">
+        <input type="number" name="age" placeholder="Age (years)">
+        <button type="submit" class="btn-primary" style="padding: 10px 20px;">Save</button>
       </div>
-
-      <!-- Add pet form (hidden by default) -->
-      <form method="POST" action="/add-pet" class="add-pet-form" id="addPetForm" style="display:none">
-        <div class="inline-form">
-          <input type="text" name="name" placeholder="Pet name" required />
-          <select name="species">
-            <option value="dog">🐕 Dog</option>
-            <option value="cat">🐈 Cat</option>
-          </select>
-          <input type="text" name="breed" placeholder="Breed (optional)" />
-          <input type="number" name="age" placeholder="Age" min="0" max="30" />
-          <button type="submit" class="btn-primary" style="padding:0.5rem 1rem">Save</button>
-        </div>
-      </form>
-
-      {% if pets %}
-        <div class="pets-list">
-          {% for pet in pets %}
-          <div class="pet-item">
-            <span class="pet-icon">{{ '🐕' if pet[3] == 'dog' else '🐈' }}</span>
-            <div>
-              <strong>{{ pet[2] }}</strong>
-              <p>{{ pet[4] or 'Unknown breed' }} · {{ pet[5] or '?' }} yrs old</p>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p class="empty-state">No pets added yet. Add your first pet above!</p>
-      {% endif %}
-    </div>
-
-    <!-- Diagnosis History -->
-    <div class="profile-section">
-      <h2>Recent Diagnoses</h2>
-      {% if diagnoses %}
-        <div class="diagnosis-list">
-          {% for d in diagnoses %}
-          <div class="diagnosis-item">
-            <div class="diag-icon">🔬</div>
-            <div class="diag-info">
-              <strong>{{ d[4] }}</strong>
-              <p>Confidence: {{ d[5] }}%</p>
-              <p class="diag-date">{{ d[7].strftime('%d %b %Y') if d[7] else '' }}</p>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p class="empty-state">No diagnoses yet. <a href="/upload">Upload a photo</a> to get started.</p>
-      {% endif %}
-    </div>
-
+    </form>
   </div>
-</section>
+
+  <div class="pets-grid">
+    {% if pets and pets|length > 0 %}
+      {% for pet in pets %}
+      <div class="pet-card">
+        <div class="pet-avatar">{{ '🐕' if pet[3] == 'dog' else '🐈' }}</div>
+        <div class="pet-info">
+          <h3>{{ pet[2] }}</h3>
+          <p>{{ pet[4] or 'Unknown breed' }} • {{ pet[5] or '?' }} years old</p>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-paw" style="font-size: 2rem; color: #ccc;"></i>
+        <p>No pets added yet. Click "Add New Pet" to get started!</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Recent Diagnoses -->
+  <div class="section-title">📋 Recent AI Diagnoses</div>
+  <div class="diagnosis-list">
+    {% if diagnoses and diagnoses|length > 0 %}
+      {% for d in diagnoses %}
+      <div class="diagnosis-item">
+        <div class="diagnosis-icon">🔬</div>
+        <div class="diagnosis-info">
+          <strong>{{ d[4] }}</strong>
+          <p>Confidence: {{ d[5] }}% • {{ d[7].strftime('%d %b %Y') if d[7] else '' }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-microscope" style="font-size: 2rem; color: #ccc;"></i>
+        <p>No diagnoses yet. <a href="/upload">Upload a photo</a> to get started!</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ========== VETERINARIAN VIEW ========== -->
+  {% elif session.get('user_role') == 'vet' %}
+  
+  <!-- Vet Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">15+</div>
+      <div class="stat-label">Pets Treated</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">5.0 ★</div>
+      <div class="stat-label">Rating</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Available</div>
+    </div>
+  </div>
+
+  <!-- Vet Profile Info -->
+  <div class="vet-dashboard">
+    <div class="vet-info-card">
+      <div class="vet-avatar">👨🏾‍⚕️</div>
+      <div class="vet-details">
+        <h3>{{ user.name if user else session.get('user_name') }}</h3>
+        <span class="vet-specialty-badge"><i class="fas fa-stethoscope"></i> Verified Veterinarian</span>
+        <p style="margin-top: 10px; color: #666;">Available for consultations and emergency care</p>
+      </div>
+    </div>
+
+    <div class="section-title">📊 Practice Statistics</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">120+</div>
+        <div class="stat-label">Happy Clients</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">98%</div>
+        <div class="stat-label">Success Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">15</div>
+        <div class="stat-label">Years Exp</div>
+      </div>
+    </div>
+
+    <div class="section-title">📝 Recent Cases</div>
+    <div class="diagnosis-list">
+      <div class="diagnosis-item">
+        <div class="diagnosis-icon">🐕</div>
+        <div class="diagnosis-info">
+          <strong>Max - Ear Infection</strong>
+          <p>Treated on Dec 10, 2024 • Follow-up scheduled</p>
+        </div>
+      </div>
+      <div class="diagnosis-item">
+        <div class="diagnosis-icon">🐈</div>
+        <div class="diagnosis-info">
+          <strong>Luna - Eye Infection</strong>
+          <p>Treated on Dec 5, 2024 • Recovered</p>
+        </div>
+      </div>
+      <div class="diagnosis-item">
+        <div class="diagnosis-icon">🐕</div>
+        <div class="diagnosis-info">
+          <strong>Rocky - Skin Infection</strong>
+          <p>Treated on Nov 28, 2024 • Under treatment</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Practice Information -->
+  <div class="vet-dashboard">
+    <div class="section-title">💼 Practice Information</div>
+    <div style="padding: 10px 0;">
+      <p><strong>📍 Location:</strong> Entebbe, Uganda</p>
+      <p><strong>📞 Emergency Contact:</strong> +256 700 123 456</p>
+      <p><strong>⏰ Hours:</strong> Monday - Saturday: 8am - 6pm</p>
+      <p><strong>🚨 Emergency:</strong> 24/7 Available</p>
+    </div>
+  </div>
+
+  {% endif %}
+
+</div>
 
 <script>
-document.getElementById('addPetBtn').addEventListener('click', () => {
-  const form = document.getElementById('addPetForm');
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
-});
+  // Add Pet Form Toggle
+  const addBtn = document.getElementById('addPetBtn');
+  const addForm = document.getElementById('addPetForm');
+  if (addBtn && addForm) {
+    addBtn.addEventListener('click', () => {
+      addForm.style.display = addForm.style.display === 'none' ? 'block' : 'none';
+    });
+  }
 </script>
 {% endblock %}

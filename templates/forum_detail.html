@@ -1,69 +1,281 @@
 {% extends "base.html" %}
 {% block title %}Forum Post — PetCheck{% endblock %}
 
-{% block content %}
-<div style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+{% block extra_css %}
+<style>
+  .forum-detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 5%;
+  }
 
-  <div style="margin-bottom: 20px;">
-    <a href="/forum" style="color: #e0702a; text-decoration: none;">← Back to Forum</a>
-  </div>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #e0702a;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .back-link:hover { gap: 12px; }
+
+  /* Post Card */
+  .post-detail-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .post-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #e0702a, #f0a06e);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .post-title h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a1d26;
+    margin-bottom: 8px;
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.8rem;
+    color: #999;
+  }
+
+  .post-body {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #333;
+    white-space: pre-wrap;
+  }
+
+  /* Replies Section */
+  .replies-section {
+    background: #f9f9f9;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+
+  .replies-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0702a;
+    display: inline-block;
+  }
+
+  .reply-card {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 15px;
+  }
+
+  .reply-avatar {
+    width: 45px;
+    height: 45px;
+    background: #e0702a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .reply-content {
+    flex: 1;
+  }
+
+  .reply-author {
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .vet-badge {
+    background: #e0702a20;
+    color: #e0702a;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .reply-text {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+  }
+
+  .reply-date {
+    font-size: 0.7rem;
+    color: #999;
+  }
+
+  /* Reply Form */
+  .reply-form {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-top: 20px;
+  }
+
+  .reply-form h3 {
+    margin-bottom: 15px;
+    color: #1a1d26;
+  }
+
+  .reply-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  .reply-form textarea:focus {
+    outline: none;
+    border-color: #e0702a;
+  }
+
+  .btn-reply {
+    background: #e0702a;
+    color: white;
+    padding: 10px 28px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 15px;
+  }
+
+  .login-prompt {
+    text-align: center;
+    padding: 30px;
+    background: white;
+    border-radius: 20px;
+  }
+
+  .login-prompt a {
+    background: #e0702a;
+    color: white;
+    padding: 10px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .post-header { flex-wrap: wrap; }
+    .reply-card { flex-direction: column; }
+    .reply-avatar { align-self: center; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="forum-detail-container">
+  <a href="/forum" class="back-link"><i class="fas fa-arrow-left"></i> Back to Forum</a>
 
   {% if post %}
+  {# 
+    post[0] = id
+    post[1] = user_id
+    post[2] = title
+    post[3] = body
+    post[4] = created_at
+    post[5] = author_name (string)
+  #}
   {% set post_id = post[0] %}
   {% set title = post[2] %}
   {% set body = post[3] %}
   {% set created_at = post[4] %}
-  {% set author_name = post[6] if post[6] else 'Anonymous' %}
+  {% set author_name = post[5] if post[5] else 'Anonymous' %}
   
-  <!-- Post Content -->
-  <div style="background: white; border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-      <div style="width: 60px; height: 60px; background: #e0702a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">
-        {{ author_name[0].upper() if author_name else '?' }}
-      </div>
-      <div>
-        <h1 style="margin: 0 0 5px 0; font-size: 24px;">{{ title }}</h1>
-        <div style="display: flex; gap: 15px; font-size: 13px; color: #999;">
-          <span>👤 {{ author_name }}</span>
-          <span>📅 {{ created_at.strftime('%d %b %Y at %H:%M') if created_at else '' }}</span>
+  <!-- Main Post -->
+  <div class="post-detail-card">
+    <div class="post-header">
+      <div class="post-avatar">{{ author_name[0].upper() if author_name and author_name != 'Anonymous' else '?' }}</div>
+      <div class="post-title">
+        <h1>{{ title }}</h1>
+        <div class="post-meta">
+          <span><i class="fas fa-user"></i> {{ author_name }}</span>
+          <span><i class="far fa-calendar"></i> {% if created_at %}{{ created_at.strftime('%d %b %Y at %I:%M %p') }}{% endif %}</span>
         </div>
       </div>
     </div>
-    <div style="line-height: 1.6; color: #333; font-size: 16px; white-space: pre-wrap;">
-      {{ body }}
-    </div>
+    <div class="post-body">{{ body }}</div>
   </div>
-  {% else %}
-  <div style="background: white; border-radius: 16px; padding: 40px; text-align: center;">
-    <p>Post not found.</p>
-    <a href="/forum" style="background: #e0702a; color: white; text-decoration: none; padding: 10px 24px; border-radius: 8px; display: inline-block; margin-top: 15px;">Back to Forum</a>
-  </div>
-  {% endif %}
 
   <!-- Replies Section -->
-  <div style="background: #f9f9f9; border-radius: 16px; padding: 25px;">
-    <h3 style="margin: 0 0 20px 0;">{{ replies|length if replies else 0 }} Replies</h3>
+  <div class="replies-section">
+    <h3 class="replies-title">{{ replies|length if replies else 0 }} {% if (replies|length) == 1 %}Reply{% else %}Replies{% endif %}</h3>
     
     {% if replies and replies|length > 0 %}
       {% for reply in replies %}
-      {% set reply_author = reply[6] if reply[6] else 'Anonymous' %}
-      {% set reply_role = reply[7] if reply[7] else '' %}
+      {# 
+        reply[0] = id
+        reply[1] = post_id
+        reply[2] = user_id
+        reply[3] = body
+        reply[4] = created_at
+        reply[5] = author_name (string)
+        reply[6] = author_role (string)
+      #}
+      {% set reply_author = reply[5] if reply[5] else 'Anonymous' %}
+      {% set reply_role = reply[6] if reply[6] else '' %}
       {% set reply_body = reply[3] %}
       {% set reply_date = reply[4] %}
       
-      <div style="display: flex; gap: 15px; margin-bottom: 20px; padding: 15px; background: white; border-radius: 12px;">
-        <div style="width: 45px; height: 45px; background: #e0702a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
-          {{ reply_author[0].upper() if reply_author else '?' }}
-        </div>
-        <div style="flex: 1;">
-          <div style="font-weight: 600; margin-bottom: 5px;">
+      <div class="reply-card">
+        <div class="reply-avatar">{{ reply_author[0].upper() if reply_author and reply_author != 'Anonymous' else '?' }}</div>
+        <div class="reply-content">
+          <div class="reply-author">
             {{ reply_author }}
             {% if reply_role == 'vet' %}
-              <span style="background: #e0702a20; color: #e0702a; padding: 2px 8px; border-radius: 20px; font-size: 11px; margin-left: 8px;">🩺 Vet</span>
+              <span class="vet-badge"><i class="fas fa-stethoscope"></i> Veterinarian</span>
             {% endif %}
           </div>
-          <p style="margin: 0 0 8px 0; color: #555; line-height: 1.5; white-space: pre-wrap;">{{ reply_body }}</p>
-          <span style="font-size: 11px; color: #999;">📅 {{ reply_date.strftime('%d %b %Y at %H:%M') if reply_date else '' }}</span>
+          <div class="reply-text">{{ reply_body }}</div>
+          <div class="reply-date">{% if reply_date %}{{ reply_date.strftime('%d %b %Y at %I:%M %p') }}{% endif %}</div>
         </div>
       </div>
       {% endfor %}
@@ -72,21 +284,29 @@
     {% endif %}
 
     <!-- Reply Form -->
-    {% if session and session.get('user_id') and post %}
-    <form method="POST" action="/forum/reply" style="margin-top: 25px; padding-top: 25px; border-top: 1px solid #ddd;">
-      <input type="hidden" name="post_id" value="{{ post[0] }}">
-      <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Your Reply</label>
-        <textarea name="body" rows="3" placeholder="Share your advice or experience..." required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
-      </div>
-      <button type="submit" style="background: #e0702a; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Post Reply →</button>
-    </form>
-    {% elif not session or not session.get('user_id') %}
-    <div style="margin-top: 25px; text-align: center; padding-top: 25px; border-top: 1px solid #ddd;">
-      <a href="/login" style="background: #e0702a; color: white; text-decoration: none; padding: 10px 24px; border-radius: 30px;">Log in to reply</a>
+    {% if session and session.get('user_id') %}
+    <div class="reply-form">
+      <h3>💬 Write a Reply</h3>
+      <form method="POST" action="/forum/reply">
+        <input type="hidden" name="post_id" value="{{ post_id }}">
+        <textarea name="body" rows="4" placeholder="Share your advice, experience, or question..." required></textarea>
+        <button type="submit" class="btn-reply">Post Reply →</button>
+      </form>
+    </div>
+    {% else %}
+    <div class="login-prompt">
+      <p>Please log in to reply to this discussion</p>
+      <a href="/login">Log in to Reply</a>
     </div>
     {% endif %}
   </div>
 
+  {% else %}
+  <div class="post-detail-card" style="text-align: center;">
+    <h2>Post not found</h2>
+    <p>The post you're looking for doesn't exist or has been removed.</p>
+    <a href="/forum" class="btn-reply" style="display: inline-block; margin-top: 15px; text-decoration: none;">Back to Forum</a>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

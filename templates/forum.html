@@ -1,99 +1,356 @@
 {% extends "base.html" %}
 {% block title %}Community Forum — PetCheck{% endblock %}
 
-{% block content %}
-<div style="max-width: 900px; margin: 0 auto; padding: 2rem;">
+{% block extra_css %}
+<style>
+  .forum-hero {
+    background: linear-gradient(135deg, #e0702a, #c25a1f);
+    padding: 50px 5%;
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+  }
 
-  <!-- Header -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-    <div>
-      <h1 style="margin: 0 0 0.5rem 0;">🐾 Community Forum</h1>
-      <p style="margin: 0; color: #666;">Ask questions, share tips, and get advice from pet owners and vets.</p>
-    </div>
-    {% if session and session.get('user_id') %}
-      <button onclick="toggleForm()" style="background: #e0702a; color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 600;">+ New Post</button>
+  .forum-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+  }
+
+  .forum-hero p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  .forum-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 5% 60px;
+  }
+
+  /* New Post Button */
+  .new-post-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+  }
+
+  .btn-new-post {
+    background: #e0702a;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+  }
+
+  .btn-new-post:hover {
+    background: #c25a1f;
+    transform: translateY(-2px);
+  }
+
+  /* New Post Form */
+  .new-post-form {
+    background: #f5f0e8;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    display: none;
+  }
+
+  .new-post-form h3 {
+    margin-bottom: 20px;
+    color: #1a1d26;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.3s;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #e0702a;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+  }
+
+  .btn-submit {
+    background: #e0702a;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .btn-cancel {
+    background: #ccc;
+    color: #333;
+    padding: 10px 24px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  /* Forum Posts List */
+  .forum-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .post-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .post-avatar {
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, #e0702a, #f0a06e);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .post-title {
+    flex: 1;
+  }
+
+  .post-title h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1d26;
+    margin-bottom: 5px;
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.75rem;
+    color: #999;
+  }
+
+  .post-excerpt {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    padding-left: 70px;
+  }
+
+  .post-footer {
+    display: flex;
+    gap: 20px;
+    padding-left: 70px;
+    font-size: 0.8rem;
+    color: #999;
+  }
+
+  .post-footer i {
+    margin-right: 5px;
+    color: #e0702a;
+  }
+
+  .read-more {
+    color: #e0702a;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* No Posts */
+  .no-posts {
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border-radius: 20px;
+  }
+
+  .no-posts i {
+    font-size: 3rem;
+    color: #ccc;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 768px) {
+    .post-header { flex-wrap: wrap; }
+    .post-excerpt, .post-footer { padding-left: 0; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="forum-hero">
+  <h1>🐾 Community Forum</h1>
+  <p>Ask questions, share experiences, and get advice from pet owners and vets</p>
+</div>
+
+<div class="forum-container">
+  <!-- New Post Button -->
+  <div class="new-post-btn">
+    {% if session.get('user_id') %}
+      <button class="btn-new-post" id="showNewPostBtn">
+        <i class="fas fa-plus"></i> Create New Post
+      </button>
     {% else %}
-      <a href="/login" style="background: #e0702a; color: white; text-decoration: none; padding: 10px 20px; border-radius: 30px; font-weight: 600;">Log in to Post</a>
+      <a href="/login" class="btn-new-post">
+        <i class="fas fa-sign-in-alt"></i> Log in to Post
+      </a>
     {% endif %}
   </div>
 
   <!-- New Post Form -->
-  {% if session and session.get('user_id') %}
-  <div id="newPostForm" style="display: none; background: #f5f0e8; padding: 20px; border-radius: 16px; margin-bottom: 30px;">
-    <h3 style="margin: 0 0 15px 0;">Create a New Post</h3>
+  <div class="new-post-form" id="newPostForm">
+    <h3>📝 Create a New Post</h3>
     <form method="POST" action="/forum/post">
-      <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Title</label>
-        <input type="text" name="title" placeholder="e.g. My dog has been scratching a lot" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" name="title" placeholder="What's your question or concern?" required>
       </div>
-      <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Your Message</label>
-        <textarea name="body" rows="4" placeholder="Describe your pet's situation..." required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+      <div class="form-group">
+        <label>Your Message</label>
+        <textarea name="body" rows="5" placeholder="Describe your pet's situation in detail..." required></textarea>
       </div>
-      <div style="display: flex; gap: 10px;">
-        <button type="button" onclick="toggleForm()" style="background: #ccc; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer;">Cancel</button>
-        <button type="submit" style="background: #e0702a; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer;">Post →</button>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" id="cancelPostBtn">Cancel</button>
+        <button type="submit" class="btn-submit">Post →</button>
       </div>
     </form>
   </div>
-  {% endif %}
 
   <!-- Forum Posts List -->
-  <div>
+  <div class="forum-posts">
     {% if posts and posts|length > 0 %}
       {% for post in posts %}
+      {# 
+        post[0] = id 
+        post[1] = user_id
+        post[2] = title
+        post[3] = body
+        post[4] = created_at
+        post[5] = author_name (string)
+        post[6] = reply_count
+      #}
       {% set post_id = post[0] %}
       {% set title = post[2] %}
       {% set body = post[3] %}
       {% set created_at = post[4] %}
-      {% set author_name = post[6] if post[6] else 'Anonymous' %}
-      {% set reply_count = post[7] if post[7] else 0 %}
+      {% set author_name = post[5] if post[5] else 'Anonymous' %}
+      {% set reply_count = post[6] if post[6] else 0 %}
       
-      <a href="/forum/{{ post_id }}" style="display: block; text-decoration: none; color: inherit; background: white; border: 1px solid #eee; border-radius: 12px; padding: 20px; margin-bottom: 15px; transition: all 0.2s;">
-        <div style="display: flex; align-items: flex-start; gap: 15px;">
-          <div style="width: 50px; height: 50px; background: #e0702a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; flex-shrink: 0;">
-            {{ author_name[0].upper() if author_name else '?' }}
-          </div>
-          <div style="flex: 1;">
-            <h3 style="margin: 0 0 8px 0; font-size: 18px;">{{ title }}</h3>
-            <p style="margin: 0 0 8px 0; color: #666;">{{ body[:150] }}{% if body|length > 150 %}...{% endif %}</p>
-            <div style="display: flex; gap: 15px; font-size: 12px; color: #999;">
-              <span>👤 {{ author_name }}</span>
-              <span>💬 {{ reply_count }} replies</span>
-              <span>📅 {{ created_at.strftime('%d %b %Y') if created_at else '' }}</span>
+      <a href="/forum/{{ post_id }}" class="post-card">
+        <div class="post-header">
+          <div class="post-avatar">{{ author_name[0].upper() if author_name and author_name != 'Anonymous' else '?' }}</div>
+          <div class="post-title">
+            <h3>{{ title }}</h3>
+            <div class="post-meta">
+              <span><i class="fas fa-user"></i> {{ author_name }}</span>
+              <span><i class="far fa-calendar"></i> {% if created_at %}{{ created_at.strftime('%d %b %Y') }}{% endif %}</span>
             </div>
           </div>
-          <div style="color: #e0702a; font-size: 20px;">→</div>
+        </div>
+        <div class="post-excerpt">
+          {{ body[:180] }}{% if body|length > 180 %}...{% endif %}
+        </div>
+        <div class="post-footer">
+          <span><i class="fas fa-comment"></i> {{ reply_count }} replies</span>
+          <span class="read-more">Read discussion <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
       {% endfor %}
     {% else %}
-      <!-- No posts message -->
-      <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 16px;">
-        <div style="font-size: 50px; margin-bottom: 15px;">🐾</div>
-        <h3 style="margin: 0 0 10px 0;">No posts yet</h3>
-        <p style="color: #666;">Be the first to start a conversation!</p>
-        {% if session and session.get('user_id') %}
-          <button onclick="toggleForm()" style="background: #e0702a; color: white; border: none; padding: 10px 24px; border-radius: 30px; cursor: pointer; margin-top: 15px; font-weight: 600;">+ Create First Post</button>
+      <div class="no-posts">
+        <i class="fas fa-comments"></i>
+        <h3>No posts yet</h3>
+        <p>Be the first to start a conversation!</p>
+        {% if session.get('user_id') %}
+          <button class="btn-new-post" id="emptyStateNewPostBtn" style="margin-top: 15px;">
+            <i class="fas fa-plus"></i> Create First Post
+          </button>
         {% else %}
-          <a href="/login" style="background: #e0702a; color: white; text-decoration: none; padding: 10px 24px; border-radius: 30px; display: inline-block; margin-top: 15px;">Log in to Post</a>
+          <a href="/login" class="btn-new-post" style="margin-top: 15px; display: inline-block;">
+            Log in to Post
+          </a>
         {% endif %}
       </div>
     {% endif %}
   </div>
-
 </div>
 
 <script>
-function toggleForm() {
-  var form = document.getElementById('newPostForm');
-  if (form) {
-    if (form.style.display === 'none') {
-      form.style.display = 'block';
-    } else {
-      form.style.display = 'none';
+  // Show/hide new post form
+  const showBtn = document.getElementById('showNewPostBtn');
+  const emptyStateBtn = document.getElementById('emptyStateNewPostBtn');
+  const newPostForm = document.getElementById('newPostForm');
+  const cancelBtn = document.getElementById('cancelPostBtn');
+
+  function showForm() {
+    if (newPostForm) {
+      newPostForm.style.display = newPostForm.style.display === 'none' ? 'block' : 'none';
     }
   }
-}
+
+  if (showBtn) showBtn.addEventListener('click', showForm);
+  if (emptyStateBtn) emptyStateBtn.addEventListener('click', showForm);
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      newPostForm.style.display = 'none';
+    });
+  }
 </script>
 {% endblock %}

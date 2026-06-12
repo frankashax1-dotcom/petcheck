@@ -1667,3 +1667,172 @@ a {
 .info-banner {
     background: linear-gradient(135deg, #e3f2fd, #bbdef5);
 }
+  /* Enhanced Features Section Styles */
+  .features-section {
+    padding: 60px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #1a1d26;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+  }
+
+  .feature-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 24px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(224,112,42,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #e0702a, #f0a06e);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .feature-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    border-color: rgba(224,112,42,0.2);
+  }
+
+  .feature-icon {
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, #fef0e4, #fff5ec);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover .feature-icon {
+    background: linear-gradient(135deg, #e0702a, #f0a06e);
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .feature-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1a1d26;
+  }
+
+  .feature-card p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+
+  .feature-link {
+    color: #e0702a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover .feature-link {
+    gap: 10px;
+    color: #c25a1f;
+  }
+    .step-card {
+    flex: 1;
+    text-align: center;
+    min-width: 200px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+
+  .step-number {
+    width: 55px;
+    height: 55px;
+    background: #e0702a;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto 10px;
+  }
+
+  .step-icon {
+    font-size: 2rem;
+    margin: 10px 0;
+  }
+  /* Add this to your existing slider styles */
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+  /* Feature Card Images */
+  .feature-image {
+    width: 100%;
+    height: 160px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+
+  .feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .feature-card:hover .feature-image img {
+    transform: scale(1.05);
+  }

@@ -3,446 +3,382 @@
 
 {% block extra_css %}
 <style>
-  .vets-page-modern {
-    --primary: #e0702a;
-    --secondary: #216b5e;
-  }
-  
   .vets-hero {
-    background: linear-gradient(135deg, rgba(224,112,42,0.1), rgba(33,107,94,0.1));
-    border-radius: 2rem;
-    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #e0702a, #c25a1f);
+    padding: 50px 5%;
     text-align: center;
-    margin-bottom: 3rem;
+    color: white;
+    margin-bottom: 40px;
   }
-  
+
   .vets-hero h1 {
     font-size: 2.5rem;
     font-weight: 800;
-    margin-bottom: 0.5rem;
+    margin-bottom: 15px;
   }
-  
+
   .vets-hero p {
-    color: #5a4e42;
     font-size: 1.1rem;
+    opacity: 0.9;
   }
-  
-  .vets-grid-modern {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
+
+  .vets-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5% 60px;
   }
-  
-  .vet-card-modern {
-    position: relative;
-    border-radius: 1.5rem;
-    overflow: hidden;
-    background: white;
-    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .vet-card-modern:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 30px 45px -15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .vet-card-bg {
-    position: relative;
-    height: 160px;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
-    padding: 1rem;
-  }
-  
-  .vet-card-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));
-    z-index: 0;
-  }
-  
-  .vet-avatar-modern {
-    position: relative;
-    z-index: 1;
-    width: 70px;
-    height: 70px;
-    background: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: 3px solid var(--primary);
-  }
-  
-  .vet-card-content {
-    padding: 1.5rem;
-  }
-  
-  .vet-card-content h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    color: #2a2418;
-  }
-  
-  .vet-clinic-modern {
-    color: var(--primary);
-    font-weight: 600;
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-  
-  .vet-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin: 1rem 0;
-  }
-  
-  .vet-detail-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    color: #5a4e42;
-  }
-  
-  .vet-detail-item i {
-    width: 20px;
-    color: var(--secondary);
-  }
-  
-  .vet-badge {
-    display: inline-block;
-    background: rgba(224,112,42,0.12);
-    color: var(--primary);
-    padding: 0.2rem 0.7rem;
-    border-radius: 50px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    margin-right: 0.5rem;
-  }
-  
-  .vet-actions-modern {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee5db;
-  }
-  
-  .vet-btn-call {
-    flex: 1;
-    background: var(--primary);
-    color: white;
-    padding: 0.6rem;
-    border-radius: 50px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.2s;
-  }
-  
-  .vet-btn-call:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-  }
-  
-  .vet-btn-email {
-    flex: 1;
-    background: transparent;
-    border: 2px solid var(--secondary);
-    color: var(--secondary);
-    padding: 0.6rem;
-    border-radius: 50px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.2s;
-  }
-  
-  .vet-btn-email:hover {
-    background: rgba(33,107,94,0.08);
-    transform: translateY(-2px);
-  }
-  
-  .emergency-banner-modern {
-    background: linear-gradient(135deg, #fff5f0, #ffe8e0);
-    border-radius: 1.5rem;
-    padding: 1.8rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    border-left: 5px solid #e74c3c;
-  }
-  
-  .emergency-icon {
-    font-size: 2.5rem;
-  }
-  
-  .emergency-content strong {
-    color: #e74c3c;
-    font-size: 1.1rem;
-  }
-  
-  .emergency-content p {
-    color: #5a4e42;
-    font-size: 0.9rem;
-    margin-top: 0.2rem;
-  }
-  
+
+  /* Filter Bar */
   .filter-bar {
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
     justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
   }
-  
+
   .filter-btn {
     background: white;
-    border: 1px solid #e8e0d5;
-    padding: 0.5rem 1.2rem;
+    border: 2px solid #e8e0d5;
+    padding: 10px 24px;
     border-radius: 50px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    color: #5a4e42;
   }
-  
-  .filter-btn.active,
-  .filter-btn:hover {
-    background: var(--primary);
-    border-color: var(--primary);
+
+  .filter-btn:hover, .filter-btn.active {
+    background: #e0702a;
+    border-color: #e0702a;
     color: white;
   }
-  
-  @media (max-width: 680px) {
-    .vets-hero h1 {
-      font-size: 1.8rem;
-    }
-    .vet-card-modern {
-      margin: 0 0.5rem;
-    }
+
+  /* Vets Grid */
+  .vets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+  }
+
+  /* Vet Card */
+  .vet-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+  }
+
+  .vet-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  }
+
+  /* Vet Image - Full display fix */
+  .vet-image-wrapper {
+    width: 100%;
+    height: 250px;
+    background-color: #f5f0e8;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .vet-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Fallback if image fails to load */
+  .vet-image-error {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0702a, #c25a1f);
+    color: white;
+    font-size: 3rem;
+  }
+
+  .vet-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #e0702a;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 10;
+  }
+
+  .vet-info {
+    padding: 20px;
+  }
+
+  .vet-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1d26;
+    margin-bottom: 5px;
+  }
+
+  .vet-clinic {
+    color: #e0702a;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .vet-details {
+    margin: 12px 0;
+  }
+
+  .vet-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 8px;
+  }
+
+  .vet-detail i {
+    width: 20px;
+    color: #e0702a;
+  }
+
+  .vet-specialty {
+    display: inline-block;
+    background: #f5f0e8;
+    color: #e0702a;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 10px 0;
+  }
+
+  .vet-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+  }
+
+  .btn-call {
+    flex: 1;
+    background: #e0702a;
+    color: white;
+    padding: 10px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+  }
+
+  .btn-call:hover {
+    background: #c25a1f;
+    transform: translateY(-2px);
+  }
+
+  .btn-email {
+    flex: 1;
+    background: transparent;
+    border: 2px solid #e0702a;
+    color: #e0702a;
+    padding: 10px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+  }
+
+  .btn-email:hover {
+    background: #e0702a;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .btn-email i, .btn-call i {
+    margin-right: 5px;
+  }
+
+  /* Emergency Banner */
+  .emergency-banner {
+    background: linear-gradient(135deg, #fff5f0, #ffe8e0);
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-left: 5px solid #e74c3c;
+  }
+
+  .emergency-icon {
+    font-size: 3rem;
+  }
+
+  .emergency-content h3 {
+    color: #e74c3c;
+    margin-bottom: 5px;
+  }
+
+  .emergency-content p {
+    color: #666;
+  }
+
+  .emergency-btn {
+    margin-left: auto;
+    background: #e74c3c;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .emergency-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .emergency-banner { flex-direction: column; text-align: center; }
+    .emergency-btn { margin-left: 0; margin-top: 10px; }
+    .vet-image-wrapper { height: 200px; }
+    .vets-grid { grid-template-columns: 1fr; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="vets-page-modern" style="max-width: 1280px; margin: 0 auto; padding: 2rem 5%;">
-  
-  <div class="vets-hero">
-    <h1>🐾 Find a Vet Near You</h1>
-    <p>Verified veterinary professionals in Entebbe Divisions A & B, Uganda</p>
-  </div>
-  
+<div class="vets-hero">
+  <h1>🐾 Find a Vet Near You</h1>
+  <p>Verified veterinary professionals in Entebbe Divisions A & B, Uganda</p>
+</div>
+
+<div class="vets-container">
+  <!-- Filter Bar -->
   <div class="filter-bar">
     <button class="filter-btn active" data-filter="all">All Vets</button>
     <button class="filter-btn" data-filter="division-a">Division A</button>
     <button class="filter-btn" data-filter="division-b">Division B</button>
     <button class="filter-btn" data-filter="emergency">24/7 Emergency</button>
   </div>
-  
-  <div class="vets-grid-modern" id="vetsGrid">
-    <!-- Vet cards will be populated here -->
-  </div>
-  
-  <div class="emergency-banner-modern">
-    <div class="emergency-icon">🚨</div>
-    <div class="emergency-content">
-      <strong>Pet Emergency?</strong>
-      <p>If your pet is in severe distress, bleeding heavily, or having trouble breathing, go to the nearest emergency clinic immediately. Do not wait for an AI diagnosis.</p>
-    </div>
-  </div>
-  
-</section>
 
-<script>
-  const vetsData = [
-    {
-      id: 1,
-      name: "Dr. Ssali James",
-      clinic: "Entebbe Veterinary Clinic",
-      location: "Division A, Entebbe",
-      specialty: "Dogs & Cats",
-      phone: "+256 700 123 456",
-      email: "james.ssali@vetclinic.ug",
-      experience: "12 years",
-      emergency: true,
-      image: "https://images.unsplash.com/photo-1612531386530-072f04f4d9ed?w=400&h=200&fit=crop",
-      rating: 4.8
-    },
-    {
-      id: 2,
-      name: "Dr. Nakato Sarah",
-      clinic: "PetCare Entebbe",
-      location: "Division B, Entebbe",
-      specialty: "Small Animals",
-      phone: "+256 782 654 321",
-      email: "sarah.nakato@petcare.ug",
-      experience: "8 years",
-      emergency: false,
-      image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=200&fit=crop",
-      rating: 4.9
-    },
-    {
-      id: 3,
-      name: "Dr. Mukasa David",
-      clinic: "Animal Health Center",
-      location: "Kampala Rd, Entebbe",
-      specialty: "General Veterinary",
-      phone: "+256 755 987 654",
-      email: "david.mukasa@animalhealth.ug",
-      experience: "15 years",
-      emergency: true,
-      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031f?w=400&h=200&fit=crop",
-      rating: 4.7
-    },
-    {
-      id: 4,
-      name: "Dr. Aisha Nambi",
-      clinic: "Divine Pet Clinic",
-      location: "Division A, Entebbe",
-      specialty: "Dermatology & Surgery",
-      phone: "+256 701 234 567",
-      email: "aisha.nambi@divinepet.ug",
-      experience: "6 years",
-      emergency: false,
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=200&fit=crop",
-      rating: 4.9
-    },
-    {
-      id: 5,
-      name: "Dr. John Kayongo",
-      clinic: "Entebbe Pet Hospital",
-      location: "Division B, Entebbe",
-      specialty: "Emergency & Critical Care",
-      phone: "+256 789 123 456",
-      email: "john.kayongo@epthospital.ug",
-      experience: "10 years",
-      emergency: true,
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=200&fit=crop",
-      rating: 4.6
-    },
-    {
-      id: 6,
-      name: "Dr. Grace Atim",
-      clinic: "Happy Pets Vet",
-      location: "Division A, Entebbe",
-      specialty: "Dentistry & Nutrition",
-      phone: "+256 703 456 789",
-      email: "grace.atim@happypets.ug",
-      experience: "5 years",
-      emergency: false,
-      image: "https://images.unsplash.com/photo-1522074692222-1d01d3d5a4b8?w=400&h=200&fit=crop",
-      rating: 4.8
-    }
-  ];
-  
-  function getRatingStars(rating) {
-    const fullStars = Math.floor(rating);
-    const halfStar = rating % 1 >= 0.5;
-    let stars = '';
-    for (let i = 0; i < fullStars; i++) stars += '★';
-    if (halfStar) stars += '½';
-    for (let i = stars.length; i < 5; i++) stars += '☆';
-    return stars;
-  }
-  
-  function renderVets(filter = 'all') {
-    const grid = document.getElementById('vetsGrid');
-    let filtered = [...vetsData];
-    
-    if (filter === 'division-a') {
-      filtered = filtered.filter(v => v.location.includes('Division A'));
-    } else if (filter === 'division-b') {
-      filtered = filtered.filter(v => v.location.includes('Division B'));
-    } else if (filter === 'emergency') {
-      filtered = filtered.filter(v => v.emergency === true);
-    }
-    
-    if (filtered.length === 0) {
-      grid.innerHTML = `
-        <div style="grid-column:1/-1; text-align:center; padding:4rem;">
-          <i class="fas fa-paw" style="font-size:3rem; color:#ccc;"></i>
-          <p style="margin-top:1rem; color:#5a4e42;">No vets found in this category.</p>
+  <!-- Vets Grid -->
+  <div class="vets-grid" id="vetsGrid">
+    {% if vets and vets|length > 0 %}
+      {% for vet in vets %}
+      <div class="vet-card" data-location="{{ vet.location }}" data-emergency="{{ vet.emergency }}">
+        <!-- Vet Image -->
+        <div class="vet-image-wrapper">
+          {% if vet.image_url and vet.image_url != '' %}
+            <img class="vet-image" src="{{ vet.image_url }}" alt="{{ vet.name }}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=vet-image-error><i class=\'fas fa-user-md\'></i></div>'">
+          {% else %}
+            <div class="vet-image-error">
+              <i class="fas fa-user-md"></i>
+            </div>
+          {% endif %}
+          {% if vet.emergency %}
+          <span class="vet-badge">🚨 24/7 Emergency</span>
+          {% endif %}
         </div>
-      `;
-      return;
-    }
-    
-    grid.innerHTML = filtered.map(vet => `
-      <div class="vet-card-modern" data-division="${vet.location.includes('Division A') ? 'division-a' : 'division-b'}">
-        <div class="vet-card-bg" style="background-image: url('${vet.image}');">
-          <div class="vet-avatar-modern">
-            <i class="fas fa-stethoscope"></i>
-          </div>
-        </div>
-        <div class="vet-card-content">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <h3>${vet.name}</h3>
-            <span style="color: #f5b042; font-size: 0.85rem;">${getRatingStars(vet.rating)}</span>
-          </div>
-          <div class="vet-clinic-modern">
-            <i class="fas fa-hospital-user"></i> ${vet.clinic}
+        
+        <div class="vet-info">
+          <h3 class="vet-name">{{ vet.name }}</h3>
+          <div class="vet-clinic">
+            <i class="fas fa-hospital-user"></i> {{ vet.clinic }}
           </div>
           <div class="vet-details">
-            <div class="vet-detail-item">
-              <i class="fas fa-map-marker-alt"></i> 📍 ${vet.location}
+            <div class="vet-detail">
+              <i class="fas fa-map-marker-alt"></i> 📍 {{ vet.location }}
             </div>
-            <div class="vet-detail-item">
-              <i class="fas fa-tag"></i> 🔬 ${vet.specialty}
-            </div>
-            <div class="vet-detail-item">
-              <i class="fas fa-briefcase"></i> 📅 ${vet.experience} experience
+            <div class="vet-detail">
+              <i class="fas fa-stethoscope"></i> 🔬 {{ vet.specialty }}
             </div>
           </div>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0;">
-            ${vet.emergency ? '<span class="vet-badge"><i class="fas fa-ambulance"></i> 24/7 Emergency</span>' : ''}
-            <span class="vet-badge"><i class="fas fa-check-circle"></i> Verified</span>
-          </div>
-          <div class="vet-actions-modern">
-            <a href="tel:${vet.phone.replace(/\s/g, '')}" class="vet-btn-call">
+          <span class="vet-specialty"><i class="fas fa-check-circle"></i> Verified Professional</span>
+          <div class="vet-actions">
+            <a href="tel:{{ vet.phone }}" class="btn-call">
               <i class="fas fa-phone"></i> Call
             </a>
-            <a href="mailto:${vet.email}" class="vet-btn-email">
+            <a href="mailto:{{ vet.email }}" class="btn-email" target="_blank">
               <i class="fas fa-envelope"></i> Email
             </a>
           </div>
         </div>
       </div>
-    `).join('');
-  }
-  
+      {% endfor %}
+    {% else %}
+      <div style="grid-column:1/-1; text-align:center; padding:60px;">
+        <i class="fas fa-search" style="font-size:3rem; color:#ccc;"></i>
+        <h3 style="margin-top:15px;">No vets found</h3>
+        <p>Check back later for updated listings</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Emergency Banner -->
+  <div class="emergency-banner">
+    <div class="emergency-icon">🚨</div>
+    <div class="emergency-content">
+      <h3>Pet Emergency?</h3>
+      <p>If your pet is in severe distress, bleeding heavily, or having trouble breathing, go to the nearest emergency clinic immediately. Do not wait for an AI diagnosis.</p>
+    </div>
+    <a href="#" class="emergency-btn">Find Emergency Vet →</a>
+  </div>
+</div>
+
+<script>
   // Filter functionality
-  document.querySelectorAll('.filter-btn').forEach(btn => {
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const vetCards = document.querySelectorAll('.vet-card');
+
+  filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      filterButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      renderVets(btn.dataset.filter);
+      
+      const filter = btn.getAttribute('data-filter');
+      
+      vetCards.forEach(card => {
+        const location = card.getAttribute('data-location') || '';
+        const hasEmergency = card.getAttribute('data-emergency') === 'True' || card.querySelector('.vet-badge') !== null;
+        
+        if (filter === 'all') {
+          card.style.display = 'block';
+        } else if (filter === 'division-a') {
+          card.style.display = location.includes('Division A') ? 'block' : 'none';
+        } else if (filter === 'division-b') {
+          card.style.display = location.includes('Division B') ? 'block' : 'none';
+        } else if (filter === 'emergency') {
+          card.style.display = hasEmergency ? 'block' : 'none';
+        }
+      });
     });
   });
-  
-  // Initial render
-  renderVets('all');
 </script>
 {% endblock %}

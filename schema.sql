@@ -70,7 +70,13 @@ CREATE TABLE IF NOT EXISTS articles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Forum posts table
+-- Insert sample articles
+INSERT INTO articles (title, content, category) VALUES
+('How to Spot Mange in Dogs Early', '<p>Mange is a common skin disease caused by mites...</p>', 'dogs'),
+('Eye Infections in Cats: Causes & Treatment', '<p>Conjunctivitis is one of the most common conditions in cats...</p>', 'cats'),
+('Feeding Your Dog the Right Diet in Uganda', '<p>Many pet owners feed their dogs table scraps...</p>', 'nutrition');
+
+-- Forum posts table (no updated_at column to avoid errors)
 CREATE TABLE IF NOT EXISTS forum_posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -90,3 +96,12 @@ CREATE TABLE IF NOT EXISTS forum_replies (
     FOREIGN KEY (post_id) REFERENCES forum_posts(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
+
+-- Insert sample forum posts
+INSERT INTO forum_posts (user_id, title, body) VALUES
+(1, 'Welcome to the PetCheck Forum!', 'This is a place where pet owners can share experiences and ask questions. Feel free to introduce yourself and your furry friends!'),
+(1, 'My dog has a skin rash - what should I do?', 'I noticed my dog scratching a lot and saw red patches on his belly. Has anyone experienced this before?');
+
+-- Insert sample replies
+INSERT INTO forum_replies (post_id, user_id, body) VALUES
+(2, 1, 'It could be allergies or a skin infection. I recommend taking your dog to a vet for proper diagnosis. In the meantime, keep the area clean and prevent scratching.');
