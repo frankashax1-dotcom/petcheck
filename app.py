@@ -450,5 +450,9 @@ def forum_create_reply():
         pass
     return redirect(url_for('forum_detail', post_id=post_id))
 
+@app.route('/test')
+def test():
+    return "PetCheck is running! 🐾"
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
