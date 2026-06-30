@@ -1,241 +1,60 @@
 {% extends "base.html" %}
 {% block title %}Login — PetCheck{% endblock %}
 
-{% block extra_css %}
-<style>
-  .login-container {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 5%;
-    background: linear-gradient(135deg, #fef7ed 0%, #fff4e8 100%);
-  }
-
-  .login-card {
-    background: white;
-    border-radius: 30px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 450px;
-    overflow: hidden;
-    transition: transform 0.3s;
-  }
-
-  .login-card:hover {
-    transform: translateY(-5px);
-  }
-
-  .login-header {
-    background: linear-gradient(135deg, #e0702a, #c25a1f);
-    padding: 30px;
-    text-align: center;
-    color: white;
-  }
-
-  .login-header .logo-icon {
-    font-size: 3rem;
-    margin-bottom: 10px;
-  }
-
-  .login-header h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-  }
-
-  .login-header p {
-    font-size: 0.9rem;
-    opacity: 0.9;
-  }
-
-  .login-body {
-    padding: 35px;
-  }
-
-  .form-group {
-    margin-bottom: 25px;
-  }
-
-  .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #1a1d26;
-    font-size: 0.9rem;
-  }
-
-  .form-control {
-    width: 100%;
-    padding: 14px 16px;
-    border: 2px solid #e8e0d5;
-    border-radius: 12px;
-    font-size: 1rem;
-    transition: all 0.3s;
-    font-family: inherit;
-    background: white;
-    box-sizing: border-box;
-  }
-
-  .form-control:focus {
-    outline: none;
-    border-color: #e0702a;
-    box-shadow: 0 0 0 3px rgba(224,112,42,0.1);
-  }
-
-  .form-control::placeholder {
-    color: #bbb;
-    font-size: 0.9rem;
-  }
-
-  .checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-  }
-
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    color: #666;
-  }
-
-  .checkbox-label input {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: #e0702a;
-  }
-
-  .btn-login {
-    width: 100%;
-    background: linear-gradient(135deg, #e0702a, #c25a1f);
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-bottom: 20px;
-  }
-
-  .btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(224,112,42,0.3);
-  }
-
-  .register-link {
-    text-align: center;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e8e0d5;
-    font-size: 0.9rem;
-    color: #666;
-  }
-
-  .register-link a {
-    color: #e0702a;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .register-link a:hover {
-    text-decoration: underline;
-  }
-
-  /* Alert Messages */
-  .alert {
-    padding: 12px 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .alert-error {
-    background: #ffe0e0;
-    border-left: 4px solid #e74c3c;
-    color: #c0392b;
-  }
-
-  .alert-success {
-    background: #e0f5e8;
-    border-left: 4px solid #27ae60;
-    color: #1e8449;
-  }
-
-  .alert i {
-    font-size: 1.1rem;
-  }
-
-  @media (max-width: 480px) {
-    .login-body {
-      padding: 25px;
-    }
-    .login-header {
-      padding: 25px;
-    }
-  }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <div class="logo-icon">🐾</div>
-      <h1>Welcome Back!</h1>
-      <p>Log in to access your PetCheck account</p>
+<div class="login-container" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 40px 5%; background: linear-gradient(135deg, #fef7ed 0%, #fff4e8 100%);">
+  <div class="login-card" style="background: white; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; max-width: 450px; overflow: hidden;">
+    
+    <div class="login-header" style="background: linear-gradient(135deg, #e0702a, #c25a1f); padding: 30px; text-align: center; color: white;">
+      <div style="font-size: 3rem; margin-bottom: 10px;">🐾</div>
+      <h1 style="font-size: 1.8rem; font-weight: 700;">Welcome Back!</h1>
+      <p style="font-size: 0.9rem; opacity: 0.9;">Log in to access your PetCheck account</p>
     </div>
 
-    <div class="login-body">
+    <div class="login-body" style="padding: 35px;">
+      
       <!-- Error Message -->
       {% if error %}
-      <div class="alert alert-error">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>{{ error }}</span>
+      <div style="background: #ffe0e0; border-left: 4px solid #e74c3c; padding: 12px 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-exclamation-triangle" style="color: #c0392b;"></i>
+        <span style="color: #c0392b;">{{ error }}</span>
       </div>
       {% endif %}
 
       <!-- Success Message -->
       {% if success %}
-      <div class="alert alert-success">
-        <i class="fas fa-check-circle"></i>
-        <span>{{ success }}</span>
+      <div style="background: #e0f5e8; border-left: 4px solid #27ae60; padding: 12px 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-check-circle" style="color: #1e8449;"></i>
+        <span style="color: #1e8449;">{{ success }}</span>
       </div>
       {% endif %}
 
       <!-- Login Form -->
       <form method="POST" action="/login">
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" name="email" class="form-control" placeholder="you@example.com" required autofocus>
+        <div style="margin-bottom: 25px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a1d26;">Email Address</label>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required autofocus style="width: 100%; padding: 14px 16px; border: 2px solid #e8e0d5; border-radius: 12px; font-size: 1rem;">
         </div>
 
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+        <div style="margin-bottom: 25px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a1d26;">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Enter your password" required style="width: 100%; padding: 14px 16px; border: 2px solid #e8e0d5; border-radius: 12px; font-size: 1rem;">
         </div>
 
-        <div class="checkbox-group">
-          <label class="checkbox-label">
-            <input type="checkbox" name="remember"> Remember me
+        <div style="display: flex; align-items: center; margin-bottom: 25px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: #666;">
+            <input type="checkbox" name="remember" style="width: 16px; height: 16px; accent-color: #e0702a;"> Remember me
           </label>
         </div>
 
-        <button type="submit" class="btn-login">
+        <button type="submit" style="width: 100%; background: linear-gradient(135deg, #e0702a, #c25a1f); color: white; border: none; padding: 14px; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
           Log In
         </button>
       </form>
 
-      <div class="register-link">
-        Don't have an account? <a href="/register">Sign Up Free →</a>
+      <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e8e0d5;">
+        <span style="color: #666;">Don't have an account? </span>
+        <a href="/register" style="color: #e0702a; text-decoration: none; font-weight: 600;">Sign Up Free →</a>
       </div>
     </div>
   </div>

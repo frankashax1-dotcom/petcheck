@@ -88,17 +88,6 @@
     display: block;
   }
 
-  .vet-image-error {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #e0702a, #c25a1f);
-    color: white;
-    font-size: 3rem;
-  }
-
   .vet-badge {
     position: absolute;
     top: 15px;
@@ -273,58 +262,58 @@
   <div class="vets-grid" id="vetsGrid">
     {% if vets and vets|length > 0 %}
       {% for vet in vets %}
-      <div class="vet-card" data-location="{{ vet.location }}" data-emergency="{{ vet.available }}">
+      <div class="vet-card" data-location="{{ vet[5] }}" data-emergency="{{ vet[7] }}">
         
-        <!-- ========== VET IMAGE SECTION - PASTE YOUR IMAGE LINKS BELOW ========== -->
+        <!-- ========== VET IMAGES - PASTE YOUR IMAGE LINKS BELOW ========== -->
         <div class="vet-image-wrapper">
-          {% if vet.name == 'Dr. Ssali James' %}
+          {% if vet[1] == 'Dr. Ssali James' %}
             <!-- 👇 PASTE DR. SSALI JAMES IMAGE LINK HERE -->
-            <img class="vet-image" src="https://i.imgur.com/kOlgrJM.jpeg" alt="{{ vet.name }}">
-          {% elif vet.name == 'Dr. Nakato Sarah' %}
+            <img class= "vet-image" src="https://i.imgur.com/kOlgrJM.jpeg" alt="Dr. Ssali James">
+          {% elif vet[1] == 'Dr. Nakato Sarah' %}
             <!-- 👇 PASTE DR. NAKATO SARAH IMAGE LINK HERE -->
-            <img class="vet-image" src="https://i.imgur.com/dL7RG2F.jpeg" alt="{{ vet.name }}">
-          {% elif vet.name == 'Dr. Mukasa David' %}
+            <img class="vet-image" src="https://i.imgur.com/dL7RG2F.jpeg" alt="Dr. Nakato Sarah">
+          {% elif vet[1] == 'Dr. Mukasa David' %}
             <!-- 👇 PASTE DR. MUKASA DAVID IMAGE LINK HERE -->
-            <img class="vet-image" src="https://i.imgur.com/RKGQdzB.jpeg" alt="{{ vet.name }}">
-          {% elif vet.name == 'Dr. Aisha Nambi' %}
+            <img class="vet-image" src="https://i.imgur.com/RKGQdzB.jpeg" alt="Dr. Mukasa David">
+          {% elif vet[1] == 'Dr. Aisha Nambi' %}
             <!-- 👇 PASTE DR. AISHA NAMBI IMAGE LINK HERE -->
-            <img class="vet-image" src="https://i.imgur.com/VUfqIS5.jpeg" alt="{{ vet.name }}">
-          {% elif vet.name == 'Dr. John Kayongo' %}
+            <img class="vet-image" src="https://i.imgur.com/VUfqIS5.jpeg" alt="Dr. Aisha Nambi">
+          {% elif vet[1] == 'Dr. John Kayongo' %}
             <!-- 👇 PASTE DR. JOHN KAYONGO IMAGE LINK HERE -->
-            <img class="vet-image" src="https://i.imgur.com/RKowoeA.jpeg" alt="{{ vet.name }}">
-          {% elif vet.name == 'Dr. Grace Atim' %}
+            <img class="vet-image" src="https://i.imgur.com/RKowoeA.jpeg" alt="Dr. John Kayongo">
+          {% elif vet[1] == 'Dr. Grace Atim' %}
             <!-- 👇 PASTE DR. GRACE ATIM IMAGE LINK HERE -->
-            <img class="vet-image" src="https://i.imgur.com/SpR2DFi.jpeg" alt="{{ vet.name }}">
+            <img class="vet-image" src="https://i.imgur.com/SpR2DFi.jpeg" alt="Dr. Grace Atim">
           {% else %}
-            <div class="vet-image-error">
-              <i class="fas fa-user-md"></i>
+            <div class="vet-image-wrapper" style="background: linear-gradient(135deg, #e0702a, #c25a1f); display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-stethoscope" style="font-size: 4rem; color: white;"></i>
             </div>
           {% endif %}
-          {% if vet.available %}
+          {% if vet[7] %}
           <span class="vet-badge">✅ Available</span>
           {% endif %}
         </div>
-        <!-- ========== END OF VET IMAGE SECTION ========== -->
+        <!-- ========== END OF VET IMAGES SECTION ========== -->
         
         <div class="vet-info">
-          <h3 class="vet-name">{{ vet.name }}</h3>
+          <h3 class="vet-name">{{ vet[1] }}</h3>
           <div class="vet-clinic">
-            <i class="fas fa-hospital-user"></i> {{ vet.clinic_name }}
+            <i class="fas fa-hospital-user"></i> {{ vet[2] }}
           </div>
           <div class="vet-details">
             <div class="vet-detail">
-              <i class="fas fa-map-marker-alt"></i> 📍 {{ vet.location }}
+              <i class="fas fa-map-marker-alt"></i> 📍 {{ vet[5] }}
             </div>
             <div class="vet-detail">
-              <i class="fas fa-stethoscope"></i> 🔬 {{ vet.specialization }}
+              <i class="fas fa-stethoscope"></i> 🔬 {{ vet[6] }}
             </div>
           </div>
           <span class="vet-specialty"><i class="fas fa-check-circle"></i> Verified Professional</span>
           <div class="vet-actions">
-            <a href="tel:{{ vet.phone }}" class="btn-call">
+            <a href="tel:{{ vet[3] }}" class="btn-call">
               <i class="fas fa-phone"></i> Call
             </a>
-            <a href="mailto:{{ vet.email }}" class="btn-email" target="_blank">
+            <a href="mailto:{{ vet[4] }}" class="btn-email" target="_blank">
               <i class="fas fa-envelope"></i> Email
             </a>
           </div>

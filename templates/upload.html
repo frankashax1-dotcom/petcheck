@@ -28,7 +28,7 @@
         <img id="previewImg" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin-bottom: 15px;">
         <div style="display: flex; gap: 15px; justify-content: center;">
           <button id="removeFile" style="background: #ccc; color: #333; border: none; padding: 10px 24px; border-radius: 50px; cursor: pointer; font-weight: 600;">Remove</button>
-          <button id="analyzeBtn" style="background: #e0702a; color: white; border: none; padding: 10px 24px; border-radius: 50px; cursor: pointer; font-weight: 600;">Analyze Now →</button>
+          <button id="analyzeBtn" style="background: #e0702a; color: white; border: none; padding: 10px 24px; border-radius: 50px; cursor: pointer; font-weight: 600;">Analyze Now</button>
         </div>
       </div>
     </div>
@@ -40,38 +40,19 @@
       <div style="width: 100%; max-width: 300px; margin: 15px auto; height: 8px; background: #e8e0d5; border-radius: 4px; overflow: hidden;">
         <div id="progressBar" style="width: 0%; height: 100%; background: #e0702a; transition: width 0.3s;"></div>
       </div>
-      <p style="font-size: 0.8rem; color: #999;">This may take a few seconds</p>
+      <p style="font-size: 0.8rem; color: #999;">Please wait...</p>
     </div>
   </div>
 
-  <!-- Tips Section -->
+  <!-- Tips -->
   <div style="margin-top: 30px; background: #f5f0e8; border-radius: 20px; padding: 25px;">
     <h3 style="margin-bottom: 15px;">📸 Tips for best results</h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 1.5rem;">💡</span>
-        <span>Use good lighting</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 1.5rem;">📏</span>
-        <span>Show the affected area clearly</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 1.5rem;">📱</span>
-        <span>Hold your phone steady</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 1.5rem;">🐕</span>
-        <span>Make sure your pet is visible</span>
-      </div>
+      <div>💡 Use good lighting</div>
+      <div>📏 Show the affected area clearly</div>
+      <div>📱 Hold your phone steady</div>
+      <div>🐕 Make sure your pet is visible</div>
     </div>
-  </div>
-
-  <!-- Info Box -->
-  <div style="margin-top: 20px; background: #e8f5e9; border-radius: 16px; padding: 15px; text-align: center; border-left: 4px solid #4caf50;">
-    <p style="font-size: 0.85rem; color: #2e7d32;">
-      <strong>🔬 How it works:</strong> Our AI analyzes your pet's photo for signs of common conditions including skin issues, eye infections, ear problems, wounds, and more.
-    </p>
   </div>
 </div>
 
@@ -83,15 +64,57 @@
 </style>
 
 <script>
+  // DOM Elements
   const dropZone = document.getElementById('dropZone');
   const fileInput = document.getElementById('fileInput');
   const previewArea = document.getElementById('previewArea');
   const previewImg = document.getElementById('previewImg');
   const loadingState = document.getElementById('loadingState');
   const progressBar = document.getElementById('progressBar');
-  let selectedFile = null;
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const removeBtn = document.getElementById('removeFile');
+  
+  let currentFile = null;
 
-  // Click to browse
+  // Reset to initial state
+  function resetToInitial() {
+    currentFile = null;
+    fileInput.value = '';
+    dropZone.style.display = 'block';
+    previewArea.style.display = 'none';
+    loadingState.style.display = 'none';
+    if (progressBar) progressBar.style.width = '0%';
+    dropZone.style.borderColor = '#e8e0d5';
+    dropZone.style.background = '#fef9f0';
+  }
+
+  // Handle selected file
+  function handleFile(file) {
+    // Validate file type
+    if (!file.type.match('image.*')) {
+      alert('Please upload an image file (JPG, PNG)');
+      return false;
+    }
+    
+    // Validate file size (16MB)
+    if (file.size > 16 * 1024 * 1024) {
+      alert('File is too large. Maximum size is 16MB.');
+      return false;
+    }
+    
+    currentFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImg.src = e.target.result;
+      dropZone.style.display = 'none';
+      previewArea.style.display = 'block';
+      loadingState.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+    return true;
+  }
+
+  // Trigger file input
   dropZone.addEventListener('click', () => fileInput.click());
 
   // File input change
@@ -101,7 +124,7 @@
     }
   });
 
-  // Drag and drop
+  // Drag and drop events
   dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropZone.style.borderColor = '#e0702a';
@@ -122,90 +145,67 @@
     }
   });
 
-  function handleFile(file) {
-    // Check file type
-    if (!file.type.match('image.*')) {
-      alert('Please upload an image file (JPG, PNG)');
-      return;
-    }
-    
-    // Check file size (16MB max)
-    if (file.size > 16 * 1024 * 1024) {
-      alert('File is too large. Maximum size is 16MB.');
-      return;
-    }
-    
-    selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      previewImg.src = e.target.result;
-      dropZone.style.display = 'none';
-      previewArea.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
+  // Remove button
+  if (removeBtn) {
+    removeBtn.addEventListener('click', () => {
+      resetToInitial();
+    });
   }
 
-  // Remove file
-  document.getElementById('removeFile').addEventListener('click', () => {
-    selectedFile = null;
-    fileInput.value = '';
-    previewArea.style.display = 'none';
-    dropZone.style.display = 'block';
-    dropZone.style.borderColor = '#e8e0d5';
-    dropZone.style.background = '#fef9f0';
-  });
-
   // Analyze button
-  document.getElementById('analyzeBtn').addEventListener('click', async () => {
-    if (!selectedFile) return;
-    
-    // Show loading
-    previewArea.style.display = 'none';
-    loadingState.style.display = 'block';
-    
-    // Animate progress bar
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      if (progress >= 90) {
+  if (analyzeBtn) {
+    analyzeBtn.addEventListener('click', async () => {
+      if (!currentFile) {
+        alert('Please select an image first.');
+        return;
+      }
+      
+      // Show loading, hide preview
+      previewArea.style.display = 'none';
+      loadingState.style.display = 'block';
+      
+      // Animate progress bar
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        if (progress >= 80) {
+          clearInterval(interval);
+          progress = 80;
+        }
+        if (progressBar) progressBar.style.width = progress + '%';
+      }, 200);
+      
+      // Send to server
+      const formData = new FormData();
+      formData.append('file', currentFile);
+      
+      try {
+        const response = await fetch('/diagnose', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
         clearInterval(interval);
-        progress = 90;
+        
+        if (progressBar) progressBar.style.width = '100%';
+        
+        if (result.error) {
+          alert('❌ ' + result.error + '\n\n' + (result.advice || 'Please try again.'));
+          resetToInitial();
+        } else {
+          // Store result and redirect to results page
+          setTimeout(() => {
+            window.location.href = '/results';
+          }, 500);
+        }
+      } catch (error) {
+        clearInterval(interval);
+        console.error('Upload error:', error);
+        alert('❌ Network error. Please check your connection and try again.');
+        resetToInitial();
       }
-      progressBar.style.width = progress + '%';
-    }, 200);
-    
-    // Send to server
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    
-    try {
-      const response = await fetch('/diagnose', {
-        method: 'POST',
-        body: formData
-      });
-      
-      const result = await response.json();
-      clearInterval(interval);
-      progressBar.style.width = '100%';
-      
-      if (result.error) {
-        // Show error message
-        alert('❌ ' + result.error + '\n\n' + (result.advice || 'Please try again with a clear photo of your pet.'));
-        loadingState.style.display = 'none';
-        previewArea.style.display = 'block';
-      } else {
-        // Success - redirect to results
-        setTimeout(() => {
-          window.location.href = '/results';
-        }, 800);
-      }
-    } catch (error) {
-      clearInterval(interval);
-      console.error('Error:', error);
-      alert('❌ Unable to analyze image.\n\nPlease check your internet connection and try again.');
-      loadingState.style.display = 'none';
-      previewArea.style.display = 'block';
-    }
-  });
+    });
+  }
 </script>
 {% endblock %}
